@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="package_template",
+    name="stock_market",
     version="1.0.0",
-    description="Package template",
+    description="Modules related to stock market analysis.",
     author="Josh Kim",
     author_email="joshkim47@gmail.com",
     packages=find_packages(exclude=["docs", "tests*"]),
