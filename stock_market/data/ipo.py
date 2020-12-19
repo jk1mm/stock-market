@@ -35,6 +35,26 @@ class IPO(object):
             self._recent_ipo = data
             return data
 
+    @property
+    def upcoming_ipo(self):
+        # Check if this web scraping has already been run
+        if self._upcoming_ipo:
+            return self._upcoming_ipo
+        else:
+            # First index is recent_ipo
+            ws_val_this_week = self._data_ws[1]
+            ws_val_next_week = self._data_ws[2]
+
+            # Extract data
+            data = self.extract_data(ws_val_this_week)
+            data1 = self.extract_data(ws_val_next_week)
+            data["week"] = "This Week"
+            data1["week"] = "Next Week"
+            data.append(data1, ignore_index=True)
+
+            self._recent_ipo = data
+            return data
+
     @staticmethod
     def extract_data(web_table: bs4.element.Tag) -> pd.DataFrame:
         """
