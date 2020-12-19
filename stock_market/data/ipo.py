@@ -26,7 +26,7 @@ class IPO(object):
         if self._recent_ipo:
             return self._recent_ipo
         else:
-            # First index is recent_ipo
+            # Index 0 is recent_ipo
             ws_val = self._data_ws[0]
 
             # Extract data
@@ -41,7 +41,7 @@ class IPO(object):
         if self._upcoming_ipo:
             return self._upcoming_ipo
         else:
-            # First index is recent_ipo
+            # Indexes 1 and 2 are upcoming_ipo
             ws_val_this_week = self._data_ws[1]
             ws_val_next_week = self._data_ws[2]
 
@@ -53,6 +53,21 @@ class IPO(object):
             data.append(data1, ignore_index=True)
 
             self._recent_ipo = data
+            return data
+
+    @property
+    def withdrawn_ipo(self):
+        # Check if this web scraping has already been run
+        if self._withdrawn_ipo:
+            return self._withdrawn_ipo
+        else:
+            # Index 3 is withdrawn_ipo
+            ws_val = self._data_ws[4]
+
+            # Extract data
+            data = self.extract_data(ws_val)
+
+            self._withdrawn_ipo = data
             return data
 
     @staticmethod
@@ -87,7 +102,7 @@ class IPO(object):
         for i in range(len(all_info)):
             ipo_info = all_info[i].text.strip().split("\n")
             values.append(ipo_info)
-
+        print(values)
         df = pd.DataFrame(values, columns=columns)
 
         return df
