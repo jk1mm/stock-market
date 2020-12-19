@@ -1,4 +1,4 @@
-from stock_market.data.yahoo_finance import *
+from stock_market.data.stocks import *
 
 
 def test_get_ticker():
