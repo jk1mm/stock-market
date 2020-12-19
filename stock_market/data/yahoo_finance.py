@@ -14,10 +14,10 @@ def get_ticker(ticker: str, start_date: str, end_date: str = None) -> pd.DataFra
         Stock ticker symbol.
 
     start_date: str
-        Start date of stock information. (Use format YYYY-MM-DD)
+        Start date of stock information. (e.g. 2020-01-01, 2020/01/01, January 1 2020)
 
     end_date: str, default None
-        End date of stock information. If None, use current date. (Use format YYYY-MM-DD)
+        End date of stock information. If None, use current date.
 
     Returns
     -------
