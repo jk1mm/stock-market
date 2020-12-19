@@ -13,3 +13,6 @@ def test_get_ticker():
     )
     assert stock_data.equals(stock_data_c1)
     assert stock_data.equals(stock_data_c2)
+
+    # Check default end date
+    get_ticker("AAPL", start_date="2020-12-01")
