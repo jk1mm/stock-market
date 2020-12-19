@@ -21,8 +21,15 @@ def get_ticker(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
 
     Returns
     -------
-    y_pred : array of shape (n_samples,)
-        Returns predicted values of linear predictor.
+    stock_data: pd.DataFrame
+        Stock information, extracted from Yahoo Finance.
 
     """
-    None
+    # Convert string dates to DateTime
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    # Extract stock data using DataReader
+    stock_data = data.DataReader(ticker, "yahoo", start_date, end_date)
+
+    return stock_data
