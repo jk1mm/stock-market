@@ -4,7 +4,7 @@ import pandas as pd
 
 # Reference:
 # https://towardsdatascience.com/how-to-get-market-data-from-the-nyse-in-less-than-3-lines-python-41791212709c
-def get_ticker(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
+def get_ticker(ticker: str, start_date: str, end_date: str = None) -> pd.DataFrame:
     """
     Extracts stock prices over a date period from Yahoo Finance.
 
@@ -16,8 +16,8 @@ def get_ticker(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
     start_date: str
         Start date of stock information. (Use format YYYY-MM-DD)
 
-    end_date: str
-        End date of stock information. (Use format YYYY-MM-DD)
+    end_date: str, default None
+        End date of stock information. If None, use current date. (Use format YYYY-MM-DD)
 
     Returns
     -------
@@ -27,7 +27,10 @@ def get_ticker(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
     """
     # Convert string dates to DateTime
     start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
+    if end_date:
+        end_date = pd.to_datetime(end_date)
+    else:
+        end_date = pd.to_datetime("today")
 
     # Extract stock data using DataReader
     stock_data = data.DataReader(ticker, "yahoo", start_date, end_date)
