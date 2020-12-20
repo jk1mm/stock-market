@@ -23,7 +23,7 @@ class IPO(object):
     @property
     def recent_ipo(self):
         # Check if this web scraping has already been run
-        if self._recent_ipo:
+        if type(self._recent_ipo) is pd.DataFrame:
             return self._recent_ipo
         else:
             # Index 0 is recent_ipo
@@ -38,7 +38,7 @@ class IPO(object):
     @property
     def upcoming_ipo(self):
         # Check if this web scraping has already been run
-        if self._upcoming_ipo:
+        if type(self._upcoming_ipo) is pd.DataFrame:
             return self._upcoming_ipo
         else:
             # Indexes 1 and 2 are upcoming_ipo
@@ -58,7 +58,7 @@ class IPO(object):
     @property
     def future_ipo(self):
         # Check if this web scraping has already been run
-        if self._future_ipo:
+        if type(self._future_ipo) is pd.DataFrame:
             return self._future_ipo
         else:
             # Index 3 is future_ipo
@@ -75,7 +75,7 @@ class IPO(object):
     @property
     def withdrawn_ipo(self):
         # Check if this web scraping has already been run
-        if self._withdrawn_ipo:
+        if type(self._withdrawn_ipo) is pd.DataFrame:
             return self._withdrawn_ipo
         else:
             # Index 3 is withdrawn_ipo
