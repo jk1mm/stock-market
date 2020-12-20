@@ -56,6 +56,23 @@ class IPO(object):
             return data
 
     @property
+    def future_ipo(self):
+        # Check if this web scraping has already been run
+        if self._future_ipo:
+            return self._future_ipo
+        else:
+            # Index 3 is future_ipo
+            ws_val = self._data_ws[3]
+
+            # Extract data
+            data = self.extract_data(
+                ws_val, check_value=True, len_constraint=6, index_deletion=1
+            )
+
+            self._withdrawn_ipo = data
+            return data
+
+    @property
     def withdrawn_ipo(self):
         # Check if this web scraping has already been run
         if self._withdrawn_ipo:
