@@ -90,9 +90,7 @@ class IPO(object):
             ws_val = self._data_ws[3]
 
             # Extract data
-            data = self.extract_data(
-                ws_val, check_value=True, len_constraint=6, index_deletion=1
-            )
+            data = self.extract_data(ws_val, index_deletion=1)
 
             self._withdrawn_ipo = data
             return data
@@ -115,8 +113,6 @@ class IPO(object):
     @staticmethod
     def extract_data(
         web_table: bs4.element.Tag,
-        check_value: bool = False,
-        len_constraint: int = None,
         index_deletion: int = None,
     ) -> pd.DataFrame:
         """
@@ -127,16 +123,8 @@ class IPO(object):
         web_table: bs4.element.Tag
             The BeautifulSoup data containing table values.
 
-        check_value: bool, default False
-            Option to check value extraction, when webscraping can tend to output inconsistent values.
-
-        len_constraint: int, default None
-            Only applicable when check_value is True. The length to check for which is inconsistent with the column
-            length.
-
         index_deletion: int, default None
-            Only applicable when check_value is True. The index of the value to delete, when len_constraint number of
-            values are detected.
+            Option to delete an index of the webscraped values. If None, no index will be deleted.
 
         Returns
         -------
@@ -160,12 +148,12 @@ class IPO(object):
         values = []
 
         # Checking values
-        if check_value:
+        if index_deletion:
             for i in range(len(all_info)):
                 ipo_info = all_info[i].text.strip().split("\n")
 
                 # For future ipo stocks
-                if len(ipo_info) == len_constraint:
+                if len(ipo_info) > index_deletion:
                     del ipo_info[index_deletion]
 
                 values.append(ipo_info)
