@@ -71,7 +71,12 @@ class IPO(object):
             return data
 
     @staticmethod
-    def extract_data(web_table: bs4.element.Tag) -> pd.DataFrame:
+    def extract_data(
+        web_table: bs4.element.Tag,
+        check_value: bool = False,
+        len_constraint: int = None,
+        index_deletion: int = None,
+    ) -> pd.DataFrame:
         """
         Web scrape table header and values as pandas dataframe.
 
@@ -79,6 +84,17 @@ class IPO(object):
         ----------
         web_table: bs4.element.Tag
             The BeautifulSoup data containing table values.
+
+        check_value: bool, default False
+            Option to check value extraction, when webscraping can tend to output inconsistent values.
+
+        len_constraint: int, default None
+            Only applicable when check_value is True. The length to check for which is inconsistent with the column
+            length.
+
+        index_deletion: int, default None
+            Only applicable when check_value is True. The index of the value to delete, when len_constraint number of
+            values are detected.
 
         Returns
         -------
@@ -99,10 +115,22 @@ class IPO(object):
 
         # Append values to rows in data
         values = []
-        for i in range(len(all_info)):
-            ipo_info = all_info[i].text.strip().split("\n")
-            values.append(ipo_info)
-        print(values)
+
+        # Checking values
+        if check_value:
+            for i in range(len(all_info)):
+                ipo_info = all_info[i].text.strip().split("\n")
+
+                # For future ipo stocks
+                if len(ipo_info) == len_constraint:
+                    del ipo_info[index_deletion]
+
+                values.append(ipo_info)
+        else:
+            for i in range(len(all_info)):
+                ipo_info = all_info[i].text.strip().split("\n")
+                values.append(ipo_info)
+
         df = pd.DataFrame(values, columns=columns)
 
         return df
