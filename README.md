@@ -6,7 +6,8 @@ work in the making.
 
 ---
 ## Module Listing
-    * [Data](https://github.com/jk1mm/stock_market#data)
+ * [Data](https://github.com/jk1mm/stock_market#data)
+
 
 ---
 
@@ -15,6 +16,6 @@ work in the making.
 ### Data
 
 #### [Market data](https://github.com/jk1mm/stock_market/data)
-    - Stocks: Get stocks performances for a date range given 
-              a ticker symbol
-    - IPO: Get IPO related data from [MarketWatch](https://www.marketwatch.com/tools/ipo-calendar)
+ - **Stocks**: Get stocks performances for a date range given 
+  a ticker symbol
+ - **IPO**: Get IPO related data from [MarketWatch](https://www.marketwatch.com/tools/ipo-calendar)
