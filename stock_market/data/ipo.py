@@ -128,6 +128,7 @@ class IPO(object):
 
         # Extract header information
         columns = all_info[0].text.strip().split("\n")
+        columns = [val.replace(" ", "_") for val in columns]
         del all_info[0]
 
         # Append values to rows in data
