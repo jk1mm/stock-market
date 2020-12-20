@@ -7,6 +7,10 @@ IPO_URL = "https://www.marketwatch.com/tools/ipo-calendar"
 
 
 class IPO(object):
+    """
+    Extracts IPO related data from MarketWatch.
+    """
+
     # Web Scraped data
     _data_ws = (
         bs4.BeautifulSoup(requests.get(IPO_URL).content, "html.parser")
@@ -21,7 +25,11 @@ class IPO(object):
     _withdrawn_ipo = None
 
     @property
-    def recent_ipo(self):
+    def recent_ipo(self) -> pd.DataFrame:
+        """
+        Extract list of recently priced IPOs.
+
+        """
         # Check if this web scraping has already been run
         if type(self._recent_ipo) is pd.DataFrame:
             return self._recent_ipo
@@ -61,7 +69,11 @@ class IPO(object):
             return data
 
     @property
-    def upcoming_ipo(self):
+    def upcoming_ipo(self) -> pd.DataFrame:
+        """
+        Extract list of upcoming IPOs.
+
+        """
         # Check if this web scraping has already been run
         if type(self._upcoming_ipo) is pd.DataFrame:
             return self._upcoming_ipo
@@ -81,7 +93,11 @@ class IPO(object):
             return data
 
     @property
-    def future_ipo(self):
+    def future_ipo(self) -> pd.DataFrame:
+        """
+        Extract list of future IPOs.
+
+        """
         # Check if this web scraping has already been run
         if type(self._future_ipo) is pd.DataFrame:
             return self._future_ipo
@@ -96,7 +112,11 @@ class IPO(object):
             return data
 
     @property
-    def withdrawn_ipo(self):
+    def withdrawn_ipo(self) -> pd.DataFrame:
+        """
+        Extract list of withdrawn IPOs.
+
+        """
         # Check if this web scraping has already been run
         if type(self._withdrawn_ipo) is pd.DataFrame:
             return self._withdrawn_ipo
