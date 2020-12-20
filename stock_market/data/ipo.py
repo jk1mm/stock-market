@@ -77,7 +77,7 @@ class IPO(object):
             data1["week"] = "Next Week"
             data.append(data1, ignore_index=True)
 
-            self._recent_ipo = data
+            self._upcoming_ipo = data
             return data
 
     @property
@@ -92,7 +92,7 @@ class IPO(object):
             # Extract data
             data = self.extract_data(ws_val, index_deletion=1)
 
-            self._withdrawn_ipo = data
+            self._future_ipo = data
             return data
 
     @property
