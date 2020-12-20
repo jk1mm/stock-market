@@ -32,6 +32,19 @@ class IPO(object):
             # Extract data
             data = self.extract_data(ws_val)
 
+            # Data cleaning
+
+            # Separate Ticker symbol and price change as separate columns
+            data.insert(1, 'Ticker', data['Symbol'].str.extract('([^\s]+)', expand=True))
+            data.insert(5, 'Percent_Change', data['Symbol'].str.extract('\s(.*)\%', expand=True))
+            del data['Symbol']
+
+            # TODO: Price as boolean
+            # TODO: Shares as int
+            # TODO: IPO_Date as datetime
+            # TODO: Same for others
+
+
             self._recent_ipo = data
             return data
 
