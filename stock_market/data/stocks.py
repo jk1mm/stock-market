@@ -1,5 +1,6 @@
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 from pandas_datareader import data
 
@@ -41,5 +42,36 @@ def get_ticker(
         stock_data = data.DataReader(ticker, "yahoo", start_date, end_date)
     except KeyError:
         stock_data = None
+
+    # Adding new metrics
+    if stock_data is not None:
+
+        # 1) Add day to day percent change
+        if len(stock_data) >= 2:
+            stock_close = np.array(stock_data["Close"], dtype=float)
+            stock_pct_change_d2d = list(np.diff(stock_close) / stock_close[:-1] * 100.0)
+        else:
+            stock_pct_change_d2d = []
+
+        # Check if the first row is ipo day
+        try:
+            # Market is guaranteed open at least once on a 5 consecutive day period
+            previous_close = data.DataReader(
+                ticker,
+                "yahoo",
+                start_date - pd.Timedelta(days=5),
+                start_date - pd.Timedelta(days=1),
+            )["Close"][-1]
+            start_close = stock_data["Close"][0]
+            previous_pct_change = [
+                (start_close - previous_close) / previous_close * 100.0
+            ]
+
+        except KeyError:
+            previous_pct_change = [None]
+
+        # Add metric
+        stock_pct_change_d2d = previous_pct_change + stock_pct_change_d2d
+        stock_data["pct_change_dd"] = stock_pct_change_d2d
 
     return stock_data
