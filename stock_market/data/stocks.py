@@ -83,12 +83,12 @@ def get_ticker(
             * 100.0
         )
 
-        # 3) Within day volatility
-        mean_value = (np.array(stock_data["High"]) + np.array(stock_data["Open"])) / 2
-        stock_data["Pct: Day Volatility"] = (
-            (np.array(stock_data["High"]) - np.array(stock_data["Open"]))
-            / mean_value
-            * 100.0
-        )
+        # 3) Within day volatility (pct)
+        day_median = (np.array(stock_data["High"]) + np.array(stock_data["Open"])) / 2
+        day_range = np.array(stock_data["High"]) - np.array(stock_data["Open"])
+        stock_data["Pct: Day Volatility"] = day_range / day_median * 100.0
+
+        # 4) Within day volatility (value)
+        stock_data["Value: Day Volatility"] = day_range
 
     return stock_data
