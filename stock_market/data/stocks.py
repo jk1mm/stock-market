@@ -8,7 +8,9 @@ from pandas_datareader import data
 # Reference:
 # https://towardsdatascience.com/how-to-get-market-data-from-the-nyse-in-less-than-3-lines-python-41791212709c
 def get_ticker(
-    ticker: str, start_date: str, end_date: str = None,
+    ticker: str,
+    start_date: str,
+    end_date: str = None,
 ) -> Optional[pd.DataFrame]:
     """
     Extracts stock prices over a date period from Yahoo Finance.
@@ -46,7 +48,7 @@ def get_ticker(
     # Adding new metrics
     if stock_data is not None:
 
-        # 1) Add day to day percent change
+        # 1) Day to day percent change
         if len(stock_data) >= 2:
             stock_close = np.array(stock_data["Close"], dtype=float)
             stock_pct_change_d2d = list(np.diff(stock_close) / stock_close[:-1] * 100.0)
@@ -74,10 +76,18 @@ def get_ticker(
         stock_pct_change_d2d = previous_pct_change + stock_pct_change_d2d
         stock_data["Pct: Day Over Day"] = stock_pct_change_d2d
 
-        # 2) Add within day percent change
+        # 2) Within day percent change
         stock_data["Pct: Within Day"] = (
             (np.array(stock_data["Close"]) - np.array(stock_data["Open"]))
             / np.array(stock_data["Open"])
+            * 100.0
+        )
+
+        # 3) Within day volatility
+        mean_value = (np.array(stock_data["High"]) + np.array(stock_data["Open"])) / 2
+        stock_data["Pct: Day Volatility"] = (
+            (np.array(stock_data["High"]) - np.array(stock_data["Open"]))
+            / mean_value
             * 100.0
         )
 
