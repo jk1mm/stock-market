@@ -1,10 +1,14 @@
-from pandas_datareader import data
+from typing import Optional
+
 import pandas as pd
+from pandas_datareader import data
 
 
 # Reference:
 # https://towardsdatascience.com/how-to-get-market-data-from-the-nyse-in-less-than-3-lines-python-41791212709c
-def get_ticker(ticker: str, start_date: str, end_date: str = None) -> pd.DataFrame:
+def get_ticker(
+    ticker: str, start_date: str, end_date: str = None
+) -> Optional[pd.DataFrame]:
     """
     Extracts stock prices over a date period from Yahoo Finance.
 
@@ -21,7 +25,7 @@ def get_ticker(ticker: str, start_date: str, end_date: str = None) -> pd.DataFra
 
     Returns
     -------
-    stock_data: pd.DataFrame
+    stock_data: Optional[pd.DataFrame]
         Stock information, extracted from Yahoo Finance.
 
     """
@@ -33,6 +37,9 @@ def get_ticker(ticker: str, start_date: str, end_date: str = None) -> pd.DataFra
         end_date = pd.to_datetime("today")
 
     # Extract stock data using DataReader
-    stock_data = data.DataReader(ticker, "yahoo", start_date, end_date)
+    try:
+        stock_data = data.DataReader(ticker, "yahoo", start_date, end_date)
+    except KeyError:
+        stock_data = None
 
     return stock_data
