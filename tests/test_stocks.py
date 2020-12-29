@@ -16,3 +16,9 @@ def test_get_ticker():
 
     # Check default end date
     get_ticker("AAPL", start_date="2020-12-01")
+
+    # Check invalid data call results in None
+    assert get_ticker("ABNB", start_date="2019-12-10", end_date="2019-12-10") is None
+
+    # Case valid for single day
+    get_ticker("ABNB", start_date="2020-12-10", end_date="2020-12-10")
