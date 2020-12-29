@@ -9,6 +9,7 @@ work in the making.
  * [Data](https://github.com/jk1mm/stock_market#data)
 
 
+
 ---
 
 ## Modules
@@ -19,3 +20,4 @@ work in the making.
  - **Stocks**: Get stocks performances for a date range given 
   a ticker symbol
  - **IPO**: Get IPO related data from [MarketWatch](https://www.marketwatch.com/tools/ipo-calendar)
+            and populate new metrics
