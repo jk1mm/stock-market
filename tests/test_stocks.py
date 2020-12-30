@@ -1,4 +1,6 @@
-from stock_market.data.stocks import *
+import pandas as pd
+
+from stock_market.data import get_ticker
 
 
 def test_get_ticker():
