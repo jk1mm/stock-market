@@ -20,11 +20,11 @@ class RecentIPO(object):
     _price_history = None  # Storing stock price history
 
     # Stats on different views
-    _summary = None
+    _overall_summary = None
     _individual_view = None
 
     @property
-    def summary(self) -> pd.DataFrame:
+    def overall_summary(self) -> pd.DataFrame:
         """
         High level summary of recent IPOs.
         1) Aggregate stock performance in one percentage.
@@ -33,10 +33,10 @@ class RecentIPO(object):
 
         """
         # Check if summary function has been run
-        if self._summary is None:
+        if self._overall_summary is None:
             # Setup for metric population
             data = self.price_history
-            _summary = {}
+            _overall_summary = {}
             ticker_agg_stats = pd.DataFrame()
 
             # Loop through each tickers
@@ -67,8 +67,8 @@ class RecentIPO(object):
 
             ticker_agg_stats = ticker_agg_stats.reset_index(drop=True)
 
-            _summary["stats"] = ticker_agg_stats
-            _summary["overall_change"] = {
+            _overall_summary["stats"] = ticker_agg_stats
+            _overall_summary["overall_change"] = {
                 "overall_pct": _avg(values=ticker_agg_stats["Pct_Overall_Change"]),
                 "overall_osd": _avg(
                     values=ticker_agg_stats[ticker_agg_stats["OSD_Valid"] == True][
@@ -76,21 +76,22 @@ class RecentIPO(object):
                     ]
                 ),
             }
-            self._summary = _summary
+            self._overall_summary = _overall_summary
 
         # Output summary results
         print_line = f"""
                     Recent IPO Summary
                     ------------------
-              Overall percent change : {self._summary["overall_change"]["overall_pct"]}%
-              Overall optimal sell day : {self._summary["overall_change"]["overall_osd"]}
+              Overall percent change : {self._overall_summary["overall_change"]["overall_pct"]}%
+              Overall optimal sell day : {self._overall_summary["overall_change"]["overall_osd"]}
                
                    Individual statistics
                    ---------------------
+                   OSD: Optimal Sell Day (after IPO)
                """
 
         print(print_line)
-        return self._summary["stats"]
+        return self._overall_summary["stats"]
 
     @property
     def price_history(self) -> Dict[str, pd.DataFrame]:
