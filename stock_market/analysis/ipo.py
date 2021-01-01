@@ -21,7 +21,7 @@ class RecentIPO(object):
 
     # Stats on different views
     _overall_summary = None
-    _individual_view = None
+    _individual_summary = None
 
     @property
     def overall_summary(self) -> pd.DataFrame:
@@ -87,11 +87,12 @@ class RecentIPO(object):
                
                    Individual statistics
                    ---------------------
-                   OSD: Optimal Sell Day (after IPO)
+              OSD: Optimal Sell Day (after IPO)
                """
 
         print(print_line)
         return self._overall_summary["stats"]
+        # TODO: Best OSD (using probability) by number of stocks and percent increase!!
 
     @property
     def price_history(self) -> Dict[str, pd.DataFrame]:
@@ -123,7 +124,10 @@ class RecentIPO(object):
 
 
 def _percent_change(
-    start_value: float, end_value: float, to_percent: bool = True
+    start_value: float,
+    end_value: float,
+    to_percent: bool = True,
+    round_digits: Optional[int] = 3,
 ) -> float:
     """
     Calculates percent change of two values.
@@ -139,6 +143,9 @@ def _percent_change(
     to_percent: bool;, default True
         Option to output value as percentage.
 
+    round_digits: Optional[int], default 3
+        Option to round return value to n decimal places.
+
     Returns
     -------
     percent_change: float
@@ -151,7 +158,9 @@ def _percent_change(
     # Calculation
     percent_change = (end_value - start_value) / start_value * multiplier
 
-    return percent_change
+    return (
+        percent_change if round_digits is None else round(percent_change, round_digits)
+    )
 
 
 def _avg(values: List[float], round_digits: Optional[int] = 3) -> Optional[float]:
@@ -179,4 +188,4 @@ def _avg(values: List[float], round_digits: Optional[int] = 3) -> Optional[float
 
     mean_value = sum(values) / len_values
 
-    return mean_value if round is None else round(mean_value, round_digits)
+    return mean_value if round_digits is None else round(mean_value, round_digits)
