@@ -206,11 +206,11 @@ def _avg(values: List[float], round_digits: Optional[int] = 3) -> Optional[float
 # Plotly graphs
 
 
-def plotly_hbar(
+def plotly_h_bar(
     data: pd.DataFrame,
     x_numerical: str,
     y_categorical: str,
-
+    plot_title: str = "",
 ) -> Figure:
     """
     Plots a sorted and re-formatted horizontal bar chart.
@@ -226,6 +226,8 @@ def plotly_hbar(
     x_numerical: str
         Column name of data, with numerical values.
 
+    plot_title: str, default ""
+        Plot title.
 
     Returns
     -------
@@ -234,4 +236,47 @@ def plotly_hbar(
 
     """
     # Constant parameters
-    None
+    COLOR_BAR_POSITIVE = "rgb(102,194,165)"
+    COLOR_BAR_NEGATIVE = "rgb(204,102,119)"
+    COLOR_BAR_OUTLINE = "rgb(217, 217, 217)"
+    XAXIS_END_SPACE = 75
+
+    # Work off of a copy
+    data = data.copy()
+    data = data.sort_values(by=[x_numerical], ascending=True)
+    data["Color"] = np.where(
+        data[x_numerical] < 0, COLOR_BAR_NEGATIVE, COLOR_BAR_POSITIVE
+    )
+    value_range = [list(data[x_numerical])[0], list(data[x_numerical])[-1]]
+    data_len = len(data)
+
+    # Plot
+    fig_bar = go.Figure()
+    fig_bar.add_trace(
+        go.Bar(
+            x=data[x_numerical],
+            y=data[y_categorical],
+            orientation="h",
+            text=data[x_numerical],
+            textposition="outside",
+            marker=dict(
+                color=data["Color"], line=dict(color=COLOR_BAR_OUTLINE, width=1)
+            ),
+        )
+    )
+
+    fig_bar.update_layout(
+        title=plot_title,
+        yaxis_tickfont_size=10,
+        xaxis={
+            "range": [
+                value_range[0] - XAXIS_END_SPACE,
+                value_range[1] + XAXIS_END_SPACE,
+            ]
+        },
+    )
+
+    if data_len > 10:
+        fig_bar.update_layout(height=data_len * 35.0)
+
+    return fig_bar
