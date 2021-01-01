@@ -14,6 +14,7 @@ setup(
         "pandas-datareader>=0.9.0",
         "bs4>=0.0.1",
         "requests>=2.25.1",
+        "plotly>=4.14.1",
     ],
     python_requires=">=3.6",
 )
