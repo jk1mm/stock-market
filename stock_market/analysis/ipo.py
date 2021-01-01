@@ -74,6 +74,7 @@ class RecentIPO(object):
 
             ticker_agg_stats = ticker_agg_stats.reset_index(drop=True)
 
+            # Store metrics, data and plots to _overall_summary
             _overall_summary["stats"] = ticker_agg_stats
             _overall_summary["overall_change"] = {
                 "overall_pct": _avg(values=ticker_agg_stats["Pct_Overall_Change"]),
@@ -83,10 +84,18 @@ class RecentIPO(object):
                     ]
                 ),
             }
+            _overall_summary["plots"] = {
+                "individual_pct_change": plotly_h_bar(
+                    data=ticker_agg_stats,
+                    x_numerical="Pct_Overall_Change",
+                    y_categorical="Ticker",
+                    plot_title="Percent (%) Change since IPO",
+                )
+            }
             self._overall_summary = _overall_summary
 
         # Output summary results
-        print_statistics = f"""
+        overall_result = f"""
         Recent IPO Summary
         ------------------
         Overall percent change : {self._overall_summary["overall_change"]["overall_pct"]}%
@@ -96,13 +105,18 @@ class RecentIPO(object):
         - OSD refers to Optimal Sell Day after IPO
         - Any 'day' refers to stock exchange business day, 
           excluding weekends and holidays
-
-               
-        Individual statistics
-        ---------------------
+        
         """
 
-        print(print_statistics)
+        individual_result = f"""
+        Per Stock Summary
+        -----------------
+        """
+
+        print(overall_result)
+        print(individual_result)
+        self._overall_summary["plots"]["individual_pct_change"].show()
+
         return self._overall_summary["stats"]
         # TODO: Best OSD (using probability) by number of stocks and percent increase!!
 
