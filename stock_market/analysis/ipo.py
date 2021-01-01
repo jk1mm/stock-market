@@ -1,7 +1,10 @@
 from typing import Dict, Optional, List
 
 import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
 from pandas_datareader._utils import RemoteDataError
+from plotly.graph_objs._figure import Figure
 
 from stock_market.data import IPO, get_ticker
 
@@ -198,3 +201,37 @@ def _avg(values: List[float], round_digits: Optional[int] = 3) -> Optional[float
     mean_value = sum(values) / len_values
 
     return mean_value if round_digits is None else round(mean_value, round_digits)
+
+
+# Plotly graphs
+
+
+def plotly_hbar(
+    data: pd.DataFrame,
+    x_numerical: str,
+    y_categorical: str,
+
+) -> Figure:
+    """
+    Plots a sorted and re-formatted horizontal bar chart.
+
+    Parameters
+    ----------
+    data: pd.DataFrame
+        Data with the categorical and numerical values for horizontal bar plot.
+
+    y_categorical: str
+        Column name of data, with categorical values.
+
+    x_numerical: str
+        Column name of data, with numerical values.
+
+
+    Returns
+    -------
+    fig_bar: Figure
+        The plotly graph object containing horizontal bar plot content.
+
+    """
+    # Constant parameters
+    None
