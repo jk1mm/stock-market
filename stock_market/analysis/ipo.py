@@ -42,6 +42,7 @@ class RecentIPO(object):
             # Loop through each tickers
             for ticker in data.keys():
                 ticker_data = data[ticker]
+                ticker_market_days = len(ticker_data)
                 ticker_open = ticker_data.iloc[0, :].Open
 
                 # Calculate Optimal Sell Day (OSD)
@@ -51,15 +52,18 @@ class RecentIPO(object):
                 # Add ticker stats to aggregated stats
                 ticker_stats = {
                     "Ticker": ticker,
+                    "Days_On_Exchange": ticker_market_days,
                     "Pct_Overall_Change": _percent_change(
                         start_value=ticker_open,
-                        end_value=ticker_data.iloc[len(ticker_data) - 1, :].Close,
+                        end_value=ticker_data.iloc[ticker_market_days - 1, :].Close,
                     ),
                     "OSD": osd,
                     "OSD_Max_Pct_Gain": _percent_change(
                         start_value=ticker_open, end_value=max(ticker_high)
                     ),
-                    "OSD_Valid": True if len(ticker_high) - OSD_THRESH > osd else False,
+                    "OSD_Valid": True
+                    if ticker_market_days - OSD_THRESH > osd
+                    else False,
                 }
                 ticker_agg_stats = ticker_agg_stats.append(
                     pd.DataFrame(ticker_stats, index=[0])
@@ -79,18 +83,23 @@ class RecentIPO(object):
             self._overall_summary = _overall_summary
 
         # Output summary results
-        print_line = f"""
-                    Recent IPO Summary
-                    ------------------
-              Overall percent change : {self._overall_summary["overall_change"]["overall_pct"]}%
-              Overall optimal sell day : {self._overall_summary["overall_change"]["overall_osd"]}
-               
-                   Individual statistics
-                   ---------------------
-              OSD: Optimal Sell Day (after IPO)
-               """
+        print_statistics = f"""
+        Recent IPO Summary
+        ------------------
+        Overall percent change : {self._overall_summary["overall_change"]["overall_pct"]}%
+        Overall optimal sell day : {self._overall_summary["overall_change"]["overall_osd"]}
 
-        print(print_line)
+        Notes: 
+        - OSD refers to Optimal Sell Day after IPO
+        - Any 'day' refers to stock exchange business day, 
+          excluding weekends and holidays
+
+               
+        Individual statistics
+        ---------------------
+        """
+
+        print(print_statistics)
         return self._overall_summary["stats"]
         # TODO: Best OSD (using probability) by number of stocks and percent increase!!
 
