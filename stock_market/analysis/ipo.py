@@ -1,9 +1,9 @@
+from typing import Dict, Optional, List
+
 import pandas as pd
 from pandas_datareader._utils import RemoteDataError
 
-from typing import Dict
 from stock_market.data import IPO, get_ticker
-
 
 OSD_THRESH = 3
 
@@ -67,7 +67,32 @@ class RecentIPO(object):
                     pd.DataFrame(ticker_stats, index=[0])
                 )
 
-            ticker_agg_stats = ticker_agg_stats.reset_index()
+            ticker_agg_stats = ticker_agg_stats.reset_index(drop=True)
+
+            _summary["stats"] = ticker_agg_stats
+            _summary["overall_change"] = {
+                "overall_pct": _avg(values=ticker_agg_stats["Pct_Overall_Change"]),
+                "overall_osd": _avg(
+                    values=ticker_agg_stats[ticker_agg_stats["OSD_Ongoing"] == False][
+                        "OSD"
+                    ]
+                ),
+            }
+            self._summary = _summary
+
+        # Output summary results
+        print_line = f"""
+                    Recent IPO Summary
+                    ------------------
+              Overall percent change : {self._summary["overall_change"]["overall_pct"]}%
+              Overall optimal sell day : {self._summary["overall_change"]["overall_osd"]}
+               
+                   Individual statistics
+                   ---------------------
+               """
+
+        print(print_line)
+        return self._summary["stats"]
 
     @property
     def price_history(self) -> Dict[str, pd.DataFrame]:
@@ -96,6 +121,8 @@ class RecentIPO(object):
 
 
 # Helper function
+
+
 def _percent_change(
     start_value: float, end_value: float, to_percent: bool = True
 ) -> float:
@@ -126,3 +153,31 @@ def _percent_change(
     percent_change = (end_value - start_value) / start_value * multiplier
 
     return percent_change
+
+
+def _avg(values: List[float], round_digits: Optional[int] = 3) -> Optional[float]:
+    """
+    Calculates the mean of the list of values.
+
+    Parameters
+    ----------
+    values: List[float]
+        List of numerical values.
+
+    round_digits: Optional[int], default 3
+        Option to round return value to n decimal places.
+
+    Returns
+    -------
+    mean_value: Optional[float]
+        The mean value of the input list.
+
+    """
+    len_values = len(values)
+
+    if len_values == 0:
+        return None
+
+    mean_value = sum(values) / len_values
+
+    return mean_value if round is None else round(mean_value, round_digits)
