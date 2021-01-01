@@ -59,9 +59,7 @@ class RecentIPO(object):
                     "OSD_Max_Pct_Gain": _percent_change(
                         start_value=ticker_open, end_value=max(ticker_high)
                     ),
-                    "OSD_Ongoing": True
-                    if len(ticker_high) - OSD_THRESH > osd
-                    else True,
+                    "OSD_Valid": True if len(ticker_high) - OSD_THRESH > osd else False,
                 }
                 ticker_agg_stats = ticker_agg_stats.append(
                     pd.DataFrame(ticker_stats, index=[0])
@@ -73,7 +71,7 @@ class RecentIPO(object):
             _summary["overall_change"] = {
                 "overall_pct": _avg(values=ticker_agg_stats["Pct_Overall_Change"]),
                 "overall_osd": _avg(
-                    values=ticker_agg_stats[ticker_agg_stats["OSD_Ongoing"] == False][
+                    values=ticker_agg_stats[ticker_agg_stats["OSD_Valid"] == True][
                         "OSD"
                     ]
                 ),
