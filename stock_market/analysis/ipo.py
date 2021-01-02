@@ -112,6 +112,8 @@ class RecentIPO(object):
                 # Add to lag values
                 sorted_lag_values.append(ppd)
 
+            heatmap_x_lab = list(range(0, max_days))
+
             _overall_summary["plots"] = {
                 "individual_pct_change": plotly_h_bar(
                     data=ticker_agg_stats,
@@ -245,6 +247,39 @@ def _avg(values: List[float], round_digits: Optional[int] = 3) -> Optional[float
     mean_value = sum(values) / len_values
 
     return mean_value if round_digits is None else round(mean_value, round_digits)
+
+
+def _scale_matrix_value(
+    target_value: float, data: List[List[Optional[float]]]
+) -> float:
+    """
+    Returns a scale of a value from values in matrix.
+
+    Parameters
+    ----------
+    target_value: float
+        Value to scale.
+
+    data: List[List[Optional[float]]]
+        Matrix with values.
+
+    Returns
+    -------
+    scale: Optional[float]
+        The mean value of the input list.
+
+    """
+    # Flatten data
+    flattened_data = [
+        x for x in [val for sub_list in data for val in sub_list] if x is not None
+    ]
+
+    scale = abs(
+        (target_value - min(flattened_data))
+        / (max(flattened_data) - min(flattened_data))
+    )
+
+    return scale
 
 
 # Plotly graphs
