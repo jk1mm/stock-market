@@ -114,6 +114,16 @@ class RecentIPO(object):
 
             heatmap_x_lab = list(range(0, max_days))
 
+            try:
+                individual_osd_map = plotly_matrix_heatmap(
+                    data=sorted_lag_values,
+                    x_categorical=heatmap_x_lab,
+                    y_categorical=sorted_ticker,
+                    plot_title="Performance of Stocks: N days after IPO",
+                )
+            except ValueError:
+                individual_osd_map = None
+
             _overall_summary["plots"] = {
                 "individual_pct_change": plotly_h_bar(
                     data=ticker_agg_stats,
@@ -121,7 +131,7 @@ class RecentIPO(object):
                     y_categorical="Ticker",
                     plot_title="Percent (%) Change since IPO",
                 ),
-                "individual_osd_map": sorted_lag_values,
+                "individual_osd_map": individual_osd_map,
             }
 
             self._overall_summary = _overall_summary
@@ -148,6 +158,8 @@ class RecentIPO(object):
         print(overall_result)
         print(individual_result)
         self._overall_summary["plots"]["individual_pct_change"].show()
+        if self._overall_summary["plots"]["individual_osd_map"] is not None:
+            self._overall_summary["plots"]["individual_osd_map"].show()
 
         return self._overall_summary["stats"]
         # TODO: Best OSD (using probability) by number of stocks and percent increase!!
@@ -451,6 +463,8 @@ def plotly_matrix_heatmap(
             # Modify color based on value relative to low threshold
             color_scale.append([1, f"rgba(0, 86, 0, {max_value/TIER_HIGH_THRESH})"])
 
+    # TODO: Add in other case checks
+
     # Plot
     fig_heatmap = go.Figure()
     fig_heatmap.add_trace(
@@ -462,5 +476,11 @@ def plotly_matrix_heatmap(
             colorscale=color_scale,
         )
     )
+
+    # Add title
+    fig_heatmap.update_layout(
+        title=plot_title,
+    )
+    # TODO: Axis label
 
     return fig_heatmap
