@@ -359,3 +359,55 @@ def plotly_h_bar(
         fig_bar.update_layout(height=data_len * 35.0)
 
     return fig_bar
+
+
+
+def plotly_matrix_heatmap(
+        data: List[List[Optional[float]]],
+        x_categorical: List,
+        y_categorical: List,
+        plot_title: str = "",
+) -> Figure:
+    """
+    Plots a matrix heatmap.
+
+    Parameters
+    ----------
+    data: List[List[Optional[float]]]
+        Matrix (List of Lists).
+
+    x_categorical: List
+        List of labels for each column.
+
+    y_categorical: List
+        List of labels for each row.
+
+    plot_title: str, default ""
+        Plot title.
+
+    Returns
+    -------
+    fig_heatmap: Figure
+        The plotly graph object containing heatmap content.
+
+    """
+    # Constant parameters
+
+    # Tier colors
+    TIER_0_COLOR = "#8B0000"
+    TIER_1_COLOR = "#DC143C"
+    TIER_2_COLOR = "#CD5C5C"
+    TIER_3_COLOR = "rgba(255, 255, 255, 0.85)"
+    TIER_4_COLOR = "#2E8B57"
+    TIER_5_COLOR = "#556B2F"
+    TIER_6_COLOR = "#006400"
+
+    # Tier Thresholds
+    TIER_1_THRESH = -100
+    TIER_2_THRESH = -50
+    TIER_3_THRESH = 0
+    TIER_4_THRESH = 50
+    TIER_5_THRESH = 100
+
+
+    return None
