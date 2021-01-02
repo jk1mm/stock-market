@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="stock_market",
-    version="1.0.2",
+    version="1.1.0",
     description="Modules related to stock market model.",
     author="Josh Kim",
     author_email="joshkim47@gmail.com",
