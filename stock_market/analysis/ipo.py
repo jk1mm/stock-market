@@ -1,7 +1,7 @@
 from typing import Dict, Optional, List
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 from pandas_datareader._utils import RemoteDataError
 from plotly.graph_objs._figure import Figure
@@ -72,7 +72,10 @@ class RecentIPO(object):
                     pd.DataFrame(ticker_stats, index=[0])
                 )
 
-            ticker_agg_stats = ticker_agg_stats.reset_index(drop=True)
+            # Sort by recency of entering into stock market
+            ticker_agg_stats = ticker_agg_stats.sort_values(
+                by=["Days_On_Exchange"], ascending=True
+            ).reset_index(drop=True)
 
             # Store metrics, data and plots to _overall_summary
             _overall_summary["stats"] = ticker_agg_stats
@@ -84,14 +87,41 @@ class RecentIPO(object):
                     ]
                 ),
             }
+
+            # OSD matrix heatmap data
+            sorted_ticker = list(
+                ticker_agg_stats.sort_values(
+                    by=["Pct_Overall_Change"], ascending=False
+                )["Ticker"]
+            )
+            max_days = max(ticker_agg_stats["Days_On_Exchange"])
+            sorted_lag_values = list()
+
+            for ticker_i in range(len(sorted_ticker)):
+                ticker_data = self.price_history[sorted_ticker[ticker_i]]
+                start_price = ticker_data["Open"][0]
+                close_price = list(ticker_data["Close"])
+
+                # Performance per day
+                ppd = [
+                    _percent_change(start_value=start_price, end_value=x)
+                    for x in close_price
+                ]
+                ppd += [None] * (max_days - len(ppd))
+
+                # Add to lag values
+                sorted_lag_values.append(ppd)
+
             _overall_summary["plots"] = {
                 "individual_pct_change": plotly_h_bar(
                     data=ticker_agg_stats,
                     x_numerical="Pct_Overall_Change",
                     y_categorical="Ticker",
                     plot_title="Percent (%) Change since IPO",
-                )
+                ),
+                "individual_osd_map": sorted_lag_values,
             }
+
             self._overall_summary = _overall_summary
 
         # Output summary results
