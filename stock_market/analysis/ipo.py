@@ -249,35 +249,25 @@ def _avg(values: List[float], round_digits: Optional[int] = 3) -> Optional[float
     return mean_value if round_digits is None else round(mean_value, round_digits)
 
 
-def _scale_matrix_value(
-    target_value: float, data: List[List[Optional[float]]]
-) -> float:
+def _scale_value(target_value: float, value_list: List[float]) -> float:
     """
-    Returns a scale of a value from values in matrix.
+    Gets the scale value of a number based on the values from a list.
 
     Parameters
     ----------
     target_value: float
         Value to scale.
 
-    data: List[List[Optional[float]]]
-        Matrix with values.
+    value_list: List[float]
+        List of values.
 
     Returns
     -------
     scale: Optional[float]
-        The mean value of the input list.
+        The scaled value.
 
     """
-    # Flatten data
-    flattened_data = [
-        x for x in [val for sub_list in data for val in sub_list] if x is not None
-    ]
-
-    scale = abs(
-        (target_value - min(flattened_data))
-        / (max(flattened_data) - min(flattened_data))
-    )
+    scale = abs((target_value - min(value_list)) / (max(value_list) - min(value_list)))
 
     return scale
 
@@ -361,12 +351,11 @@ def plotly_h_bar(
     return fig_bar
 
 
-
 def plotly_matrix_heatmap(
-        data: List[List[Optional[float]]],
-        x_categorical: List,
-        y_categorical: List,
-        plot_title: str = "",
+    data: List[List[Optional[float]]],
+    x_categorical: List,
+    y_categorical: List,
+    plot_title: str = "",
 ) -> Figure:
     """
     Plots a matrix heatmap.
@@ -393,21 +382,85 @@ def plotly_matrix_heatmap(
     """
     # Constant parameters
 
-    # Tier colors
-    TIER_0_COLOR = "#8B0000"
-    TIER_1_COLOR = "#DC143C"
-    TIER_2_COLOR = "#CD5C5C"
-    TIER_3_COLOR = "rgba(255, 255, 255, 0.85)"
-    TIER_4_COLOR = "#2E8B57"
-    TIER_5_COLOR = "#556B2F"
-    TIER_6_COLOR = "#006400"
+    # Rule setup for min and max colors
+    # Percent decrease beyond
 
     # Tier Thresholds
-    TIER_1_THRESH = -100
-    TIER_2_THRESH = -50
-    TIER_3_THRESH = 0
-    TIER_4_THRESH = 50
-    TIER_5_THRESH = 100
+    TIER_LOW_THRESH = -25
+    TIER_MIDDLE_THRESH = 0
+    TIER_HIGH_THRESH = 25
 
+    # Tier colors
+    TIER_LOW_COLOR = "rgba(255, 99, 71, 1)"
+    TIER_MIDDLE_COLOR = "rgba(255, 99, 71, 0)"
+    TIER_HIGH_COLOR = "rgba(0, 86, 0, 1)"
 
-    return None
+    # Flatten out matrix data
+    flattened_data = [
+        x for x in [val for sublist in data for val in sublist] if x is not None
+    ]
+    min_value = min(flattened_data)
+    max_value = max(flattened_data)
+    color_scale = list()
+
+    # Populate lower end of the scale
+    if min_value < 0 and max_value > 0:
+        # 1) Lower threshold
+        # Case 1: Lower end lower than threshold
+        if min_value < TIER_LOW_THRESH:
+            # Add equivalent color palette for beyond lowest and low threshold
+            color_scale.append([0, TIER_LOW_COLOR])
+            color_scale.append(
+                [
+                    _scale_value(
+                        target_value=TIER_LOW_THRESH, value_list=flattened_data
+                    ),
+                    TIER_LOW_COLOR,
+                ]
+            )
+        # Case 2: Between low threshold and 0
+        else:
+            # Modify color based on value relative to low threshold
+            color_scale.append([0, f"rgba(255, 99, 71, {min_value/TIER_LOW_THRESH})"])
+
+        # 2) Middle threshold
+        color_scale.append(
+            [
+                _scale_value(
+                    target_value=TIER_MIDDLE_THRESH, value_list=flattened_data
+                ),
+                TIER_MIDDLE_COLOR,
+            ]
+        )
+
+        # 3) Upper threshold
+        # Case 1: Upper end higher than threshold
+        if max_value > TIER_HIGH_THRESH:
+            # Add equivalent color palette for beyond upper and upper threshold
+            color_scale.append(
+                [
+                    _scale_value(
+                        target_value=TIER_HIGH_THRESH, value_list=flattened_data
+                    ),
+                    TIER_HIGH_COLOR,
+                ]
+            )
+            color_scale.append([1, TIER_HIGH_COLOR])
+        # Case 2: Between high threshold and 0
+        else:
+            # Modify color based on value relative to low threshold
+            color_scale.append([1, f"rgba(0, 86, 0, {max_value/TIER_HIGH_THRESH})"])
+
+    # Plot
+    fig_heatmap = go.Figure()
+    fig_heatmap.add_trace(
+        go.Heatmap(
+            x=x_categorical,
+            y=y_categorical,
+            z=data,
+            type="heatmap",
+            colorscale=color_scale,
+        )
+    )
+
+    return fig_heatmap
