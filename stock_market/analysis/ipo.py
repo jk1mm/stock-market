@@ -587,6 +587,11 @@ def plotly_stock_history(
         The plotly graph object containing heatmap content.
 
     """
+    # Constant parameters
+    OPACITY = 0.8
+    BAR_SHRINKAGE = 3
+    YAXIS_RANGE_EXTENSION = 0.4
+
     fig_stock_history = make_subplots(specs=[[{"secondary_y": True}]])
 
     fig_stock_history.add_trace(
@@ -595,7 +600,7 @@ def plotly_stock_history(
             y=data[line_col],
             name=line_label,
             line=dict(color="#5B84B1"),
-            opacity=0.8,
+            opacity=OPACITY,
         ),
         secondary_y=False,
     )
@@ -606,7 +611,7 @@ def plotly_stock_history(
             y=data[bar_col],
             name=bar_label,
             marker_color="#FC766A",
-            opacity=0.8,
+            opacity=OPACITY,
         ),
         secondary_y=True,
     )
@@ -630,7 +635,9 @@ def plotly_stock_history(
         fig_stock_history.update_yaxes(tickprefix=add_tick_prefix, secondary_y=False)
 
     fig_stock_history.update_yaxes(
-        showticklabels=False, secondary_y=True, range=[0, data[bar_col].max() * 3]
+        showticklabels=False,
+        secondary_y=True,
+        range=[0, data[bar_col].max() * BAR_SHRINKAGE],
     )
 
     fig_stock_history.update_xaxes(rangeslider_visible=True)
@@ -650,6 +657,21 @@ def plotly_stock_history(
                 width=2.5,
                 dash="dashdot",
             ),
+        )
+
+        # Manage the y axis range based on horizontal line value
+        line_val_max = max(data[line_col])
+        line_val_min = min(data[line_col])
+        line_val_extend = (line_val_max - line_val_min) * YAXIS_RANGE_EXTENSION
+
+        yaxis_update_max = max(add_horizontal_line, line_val_max) + line_val_extend
+        yaxis_update_min = min(add_horizontal_line, line_val_min) - line_val_extend
+        if yaxis_update_min < 0:
+            yaxis_update_min = 0
+
+        # yaxis_min
+        fig_stock_history.update_layout(
+            yaxis_range=[yaxis_update_min, yaxis_update_max]
         )
 
     return fig_stock_history
