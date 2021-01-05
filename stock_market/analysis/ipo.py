@@ -1,10 +1,12 @@
+from math import floor
 from typing import Dict, Optional, List
 
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from pandas_datareader._utils import RemoteDataError
-from plotly.graph_objs._figure import Figure
+from plotly.graph_objs._figure import Figure as go_Figure
+from plotly.subplots import make_subplots
 
 from stock_market.data import IPO, get_ticker
 
@@ -164,6 +166,54 @@ class RecentIPO(object):
         return self._overall_summary["stats"]
         # TODO: Best OSD (using probability) by number of stocks and percent increase!!
 
+    def individual_summary(self, ticker: str):
+        """
+        Individual summary of recent IPOs.
+
+        Parameters
+        ----------
+        ticker: str
+            Ticker to perform individual summary on.
+
+        Returns
+        -------
+        ticker_data: pd.DataFrame
+            Ticker performance relate information.
+
+        """
+        # Standardize ticker
+        ticker = ticker.upper()
+
+        # Check if ticker exists from recent ipo
+        if ticker.upper() not in self.price_history.keys():
+            raise Warning("Specified ticker is not part of the recent IPO.")
+
+        # Call ticker data from price_history
+        ticker_data = self.price_history[ticker].copy()
+
+        # Populate required data before plotting
+        ticker_data["Date"] = ticker_data.index
+        ticker_ipo_open = ticker_data.iloc[0, :]["Open"]
+
+        # Plot line/bar plot (showing market close price and volume)
+        fig_ticker_performance = plotly_stock_history(
+            data=ticker_data,
+            date_col="Date",
+            line_col="Close",
+            bar_col="Volume",
+            plot_title=f"{ticker} Performance Since IPO",
+            line_label="Price",
+            bar_label="Volume Traded",
+            y_axis_label="Stock Close Price",
+            add_tick_prefix="$",
+            add_horizontal_line=ticker_ipo_open,
+            add_horizontal_label="IPO Open Price",
+        )
+        # Plot chart
+        fig_ticker_performance.show()
+
+        return ticker_data
+
     @property
     def price_history(self) -> Dict[str, pd.DataFrame]:
         """
@@ -179,7 +229,7 @@ class RecentIPO(object):
                 # Loop through each stock to see validity in US/CDN stock exchange
                 try:
                     ticker = recent_ipo.iloc[stock_i, :].Ticker
-                    _price_history[ticker] = get_ticker(
+                    _price_history[ticker.upper()] = get_ticker(
                         ticker=ticker, start_date=today - pd.Timedelta(days=30)
                     )
                 except RemoteDataError:
@@ -292,7 +342,7 @@ def plotly_h_bar(
     x_numerical: str,
     y_categorical: str,
     plot_title: str = "",
-) -> Figure:
+) -> go_Figure:
     """
     Plots a sorted and re-formatted horizontal bar chart.
 
@@ -368,7 +418,7 @@ def plotly_matrix_heatmap(
     x_categorical: List,
     y_categorical: List,
     plot_title: str = "",
-) -> Figure:
+) -> go_Figure:
     """
     Plots a matrix heatmap.
 
@@ -462,7 +512,7 @@ def plotly_matrix_heatmap(
         else:
             # Modify color based on value relative to low threshold
             color_scale.append([1, f"rgba(0, 86, 0, {max_value/TIER_HIGH_THRESH})"])
-
+    # TODO: Fix color scale
     # TODO: Add in other case checks
 
     # Plot
@@ -484,3 +534,163 @@ def plotly_matrix_heatmap(
     # TODO: Axis label
 
     return fig_heatmap
+
+
+def plotly_stock_history(
+    data: pd.DataFrame,
+    date_col: str,
+    line_col: str,
+    bar_col: str,
+    plot_title: str = "",
+    line_label: str = "",
+    bar_label: str = "",
+    y_axis_label: str = "",
+    add_tick_prefix: Optional[str] = "$",
+    add_horizontal_line: Optional[float] = None,
+    add_horizontal_label: Optional[str] = None,
+) -> go_Figure:
+    """
+    Plots a line & bar graph, to show stock history performance.
+
+    Parameters
+    ----------
+    data: pd.DataFrame
+        Data with line and bar value information.
+
+    date_col: str
+        Date column in data.
+
+    line_col: str
+        Line column in data.
+
+    bar_col: str
+        Bar column in data.
+
+    plot_title: str, default ""
+        Plot title.
+
+    line_label: str, default ""
+        Label to display on line hover.
+
+    bar_label: str, default ""
+        Label to display on bar hover.
+
+    y_axis_label: str, default ""
+        Y axis name.
+
+    add_tick_prefix: Optional[str], default "$"
+        Option to add a prefix to line chart values.
+
+    add_horizontal_line: Optional[float], default None
+        Option to add a horizontal line.
+
+    add_horizontal_label: Optional[str], default None
+        Option to add label to horizontal line.
+
+    Returns
+    -------
+    fig_heatmap: Figure
+        The plotly graph object containing heatmap content.
+
+    """
+    # Constant parameters
+    OPACITY = 0.8
+    BAR_SHRINKAGE = 3
+    YAXIS_RANGE_EXTENSION = 0.4
+
+    fig_stock_history = make_subplots(specs=[[{"secondary_y": True}]])
+
+    fig_stock_history.add_trace(
+        go.Scatter(
+            x=data[date_col],
+            y=data[line_col],
+            name=line_label,
+            line=dict(color="#5B84B1"),
+            opacity=OPACITY,
+        ),
+        secondary_y=False,
+    )
+
+    fig_stock_history.add_trace(
+        go.Bar(
+            x=data[date_col],
+            y=data[bar_col],
+            name=bar_label,
+            marker_color="#FC766A",
+            opacity=OPACITY,
+        ),
+        secondary_y=True,
+    )
+
+    fig_stock_history.update_layout(
+        dict(
+            title={
+                "text": plot_title,
+                "font": dict(
+                    family="Courier New, monospace",
+                    size=25,
+                ),
+            },
+            xaxis=dict(title="Date", ticklen=5, zeroline=False),
+            yaxis=dict(title=y_axis_label),
+            hovermode="x",
+        ),
+    )
+
+    if add_tick_prefix:
+        fig_stock_history.update_yaxes(tickprefix=add_tick_prefix, secondary_y=False)
+
+    fig_stock_history.update_yaxes(
+        showticklabels=False,
+        secondary_y=True,
+        range=[0, data[bar_col].max() * BAR_SHRINKAGE],
+    )
+
+    fig_stock_history.update_xaxes(rangeslider_visible=True)
+
+    # Add a horizontal line for ipo open price
+    if add_horizontal_line:
+        fig_stock_history.add_shape(
+            type="line",
+            x0=min(data[date_col]),
+            y0=add_horizontal_line,
+            x1=max(data[date_col]),
+            y1=add_horizontal_line,
+            xref="x",
+            yref="y",
+            line=dict(
+                color="#9199BE",
+                width=2.5,
+                dash="dashdot",
+            ),
+        )
+
+        # Manage the y axis range based on horizontal line value
+        line_val_max = max(data[line_col])
+        line_val_min = min(data[line_col])
+        line_val_extend = (line_val_max - line_val_min) * YAXIS_RANGE_EXTENSION
+
+        yaxis_update_max = max(add_horizontal_line, line_val_max) + line_val_extend
+        yaxis_update_min = min(add_horizontal_line, line_val_min) - line_val_extend
+        if yaxis_update_min < 0:
+            yaxis_update_min = 0
+
+        # yaxis_min
+        fig_stock_history.update_layout(
+            yaxis_range=[yaxis_update_min, yaxis_update_max]
+        )
+
+        if add_horizontal_label:
+            fig_stock_history.add_annotation(
+                y=add_horizontal_line,
+                x=data[date_col][floor(len(data) / 2)],
+                text=add_horizontal_label,
+                xref="x",
+                yref="y",
+                align="center",
+                bgcolor="#bfdae0",
+                bordercolor="#343799",
+                showarrow=False,
+            )
+
+    return fig_stock_history
