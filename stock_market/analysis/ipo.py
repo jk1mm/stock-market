@@ -165,13 +165,13 @@ class RecentIPO(object):
         return self._overall_summary["stats"]
         # TODO: Best OSD (using probability) by number of stocks and percent increase!!
 
-    def individual_summary(self, ticker: Optional[str] = None):
+    def individual_summary(self, ticker: str):
         """
         Individual summary of recent IPOs.
 
         Parameters
         ----------
-        ticker: Optional[str], default None
+        ticker: str
             Ticker to perform individual summary on.
 
         Returns
@@ -188,9 +188,27 @@ class RecentIPO(object):
             raise Warning("Specified ticker is not part of the recent IPO.")
 
         # Call ticker data from price_history
-        ticker_data = self.price_history[ticker]
+        ticker_data = self.price_history[ticker].copy()
+
+        # Populate required data before plotting
+        ticker_data["Date"] = ticker_data.index
+        ticker_ipo_open = ticker_data.iloc[0, :]["Open"]
 
         # Plot line/bar plot (showing market close price and volume)
+        fig_ticker_performance = plotly_stock_history(
+            data=ticker_data,
+            date_col="Date",
+            line_col="Close",
+            bar_col="Volume",
+            plot_title=f"{ticker} Performance Since IPO",
+            line_label="Price",
+            bar_label="Volume Traded",
+            y_axis_label="Stock Close Price",
+            add_tick_prefix="$",
+            add_horizontal_line=ticker_ipo_open,
+        )
+        # Plot chart
+        fig_ticker_performance.show()
 
         return ticker_data
 
