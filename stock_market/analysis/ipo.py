@@ -5,6 +5,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from pandas_datareader._utils import RemoteDataError
 from plotly.graph_objs._figure import Figure as go_Figure
+from plotly.subplots import make_subplots
 
 from stock_market.data import IPO, get_ticker
 
@@ -513,3 +514,60 @@ def plotly_matrix_heatmap(
     # TODO: Axis label
 
     return fig_heatmap
+
+
+def plotly_stock_history(
+    data: pd.DataFrame,
+    date_col: str,
+    line_col: str,
+    bar_col: str,
+    plot_title: str = "",
+    line_label: str = "",
+    bar_label: str = "",
+    y_axis_label: str = "",
+    add_tick_prefix: Optional[str] = "$",
+    add_horizontal_line: Optional[float] = None,
+) -> go_Figure:
+    """
+    Plots a line & bar graph, to show stock history performance.
+
+    Parameters
+    ----------
+    data: pd.DataFrame
+        Data with line and bar value information.
+
+    date_col: str
+        Date column in data.
+
+    line_col: str
+        Line column in data.
+
+    bar_col: str
+        Bar column in data.
+
+    plot_title: str, default ""
+        Plot title.
+
+    line_label: str, default ""
+        Label to display on line hover.
+
+    bar_label: str, default ""
+        Label to display on bar hover.
+
+    y_axis_label: str, default ""
+        Y axis name.
+
+    add_tick_prefix: Optional[str], default "$"
+        Option to add a prefix to line chart values.
+
+    add_horizontal_line: Optional[float], default None
+        Option to add a horizontal line.
+
+    Returns
+    -------
+    fig_heatmap: Figure
+        The plotly graph object containing heatmap content.
+
+    """
+
+    return None
