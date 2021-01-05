@@ -569,5 +569,69 @@ def plotly_stock_history(
         The plotly graph object containing heatmap content.
 
     """
+    fig_stock_history = make_subplots(specs=[[{"secondary_y": True}]])
 
-    return None
+    fig_stock_history.add_trace(
+        go.Scatter(
+            x=data[date_col],
+            y=data[line_col],
+            name=line_label,
+            line=dict(color="#5B84B1"),
+            opacity=0.8,
+        ),
+        secondary_y=False,
+    )
+
+    fig_stock_history.add_trace(
+        go.Bar(
+            x=data[date_col],
+            y=data[bar_col],
+            name=bar_label,
+            marker_color="#FC766A",
+            opacity=0.8,
+        ),
+        secondary_y=True,
+    )
+
+    fig_stock_history.update_layout(
+        dict(
+            title={
+                "text": plot_title,
+                "font": dict(
+                    family="Courier New, monospace",
+                    size=25,
+                ),
+            },
+            xaxis=dict(title="Date", ticklen=5, zeroline=False),
+            yaxis=dict(title=y_axis_label),
+            hovermode="x",
+        ),
+    )
+
+    if add_tick_prefix:
+        fig_stock_history.update_yaxes(tickprefix=add_tick_prefix, secondary_y=False)
+
+    fig_stock_history.update_yaxes(
+        showticklabels=False, secondary_y=True, range=[0, data[bar_col].max() * 3]
+    )
+
+    fig_stock_history.update_xaxes(rangeslider_visible=True)
+
+    # Add a horizontal line for ipo open price
+    if add_horizontal_line:
+        fig_stock_history.add_shape(
+            type="line",
+            x0=min(data[date_col]),
+            y0=add_horizontal_line,
+            x1=max(data[date_col]),
+            y1=add_horizontal_line,
+            xref="x",
+            yref="y",
+            line=dict(
+                color="#9199BE",
+                width=2.5,
+                dash="dashdot",
+            ),
+        )
+
+    return fig_stock_history
