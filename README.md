@@ -11,8 +11,8 @@ work in the making.
 
 ---
 ## Module Listing
- * [Data](https://github.com/jk1mm/stock_market#data)
- * [Analysis](https://github.com/jk1mm/stock_market#analysis)
+ * [Data](https://github.com/jk1mm/stock-market#data)
+ * [Analysis](https://github.com/jk1mm/stock-market#analysis)
 
 
 
@@ -33,7 +33,7 @@ work in the making.
 
 ### Analysis
 
-#### [Market Analysis](stock_market/analysis)
+#### [Market analysis](stock_market/analysis)
 - **IPO**: Analysis on recent and upcoming IPO stocks
     1) General success metrics on recent IPO bubble 
     2) Optimal sell day analysis
