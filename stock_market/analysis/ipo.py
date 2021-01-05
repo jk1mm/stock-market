@@ -1,3 +1,4 @@
+from math import floor
 from typing import Dict, Optional, List
 
 import numpy as np
@@ -206,6 +207,7 @@ class RecentIPO(object):
             y_axis_label="Stock Close Price",
             add_tick_prefix="$",
             add_horizontal_line=ticker_ipo_open,
+            add_horizontal_label="IPO Open Price",
         )
         # Plot chart
         fig_ticker_performance.show()
@@ -545,6 +547,7 @@ def plotly_stock_history(
     y_axis_label: str = "",
     add_tick_prefix: Optional[str] = "$",
     add_horizontal_line: Optional[float] = None,
+    add_horizontal_label: Optional[str] = None,
 ) -> go_Figure:
     """
     Plots a line & bar graph, to show stock history performance.
@@ -580,6 +583,9 @@ def plotly_stock_history(
 
     add_horizontal_line: Optional[float], default None
         Option to add a horizontal line.
+
+    add_horizontal_label: Optional[str], default None
+        Option to add label to horizontal line.
 
     Returns
     -------
@@ -673,5 +679,18 @@ def plotly_stock_history(
         fig_stock_history.update_layout(
             yaxis_range=[yaxis_update_min, yaxis_update_max]
         )
+
+        if add_horizontal_label:
+            fig_stock_history.add_annotation(
+                y=add_horizontal_line,
+                x=data[date_col][floor(len(data) / 2)],
+                text=add_horizontal_label,
+                xref="x",
+                yref="y",
+                align="center",
+                bgcolor="#bfdae0",
+                bordercolor="#343799",
+                showarrow=False,
+            )
 
     return fig_stock_history
