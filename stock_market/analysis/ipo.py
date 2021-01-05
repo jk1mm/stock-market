@@ -175,15 +175,23 @@ class RecentIPO(object):
 
         Returns
         -------
+        ticker_data: pd.DataFrame
+            Ticker performance relate information.
 
         """
-        # Call data from price_history
+        # Standardize ticker
+        ticker = ticker.upper()
 
-        # Graph history
+        # Check if ticker exists from recent ipo
+        if ticker.upper() not in self.price_history.keys():
+            raise Warning("Specified ticker is not part of the recent IPO.")
 
-        # Use stats generated from ticker to do analysis
+        # Call ticker data from price_history
+        ticker_data = self.price_history[ticker]
 
-        None
+        # Plot line/bar plot (showing market close price and volume)
+
+        return ticker_data
 
     @property
     def price_history(self) -> Dict[str, pd.DataFrame]:
