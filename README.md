@@ -4,6 +4,11 @@ Stock market related modules packaged into this one repo.
 Market data, analysis, and prediction are some of the upcoming 
 work in the making.
 
+
+## Overview
+<p align="center"><img src="https://github.com/jk1mm/stock-market/blob/release/pic/overview_flowchart.png"></p>
+
+
 ---
 ## Module Listing
  * [Data](https://github.com/jk1mm/stock_market#data)
