@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from pandas_datareader._utils import RemoteDataError
-from plotly.graph_objs._figure import Figure
+from plotly.graph_objs._figure import Figure as go_Figure
 
 from stock_market.data import IPO, get_ticker
 
@@ -164,6 +164,27 @@ class RecentIPO(object):
         return self._overall_summary["stats"]
         # TODO: Best OSD (using probability) by number of stocks and percent increase!!
 
+    def individual_summary(self, ticker: Optional[str] = None):
+        """
+        Individual summary of recent IPOs.
+
+        Parameters
+        ----------
+        ticker: Optional[str], default None
+            Ticker to perform individual summary on.
+
+        Returns
+        -------
+
+        """
+        # Call data from price_history
+
+        # Graph history
+
+        # Use stats generated from ticker to do analysis
+
+        None
+
     @property
     def price_history(self) -> Dict[str, pd.DataFrame]:
         """
@@ -179,7 +200,7 @@ class RecentIPO(object):
                 # Loop through each stock to see validity in US/CDN stock exchange
                 try:
                     ticker = recent_ipo.iloc[stock_i, :].Ticker
-                    _price_history[ticker] = get_ticker(
+                    _price_history[ticker.upper()] = get_ticker(
                         ticker=ticker, start_date=today - pd.Timedelta(days=30)
                     )
                 except RemoteDataError:
@@ -292,7 +313,7 @@ def plotly_h_bar(
     x_numerical: str,
     y_categorical: str,
     plot_title: str = "",
-) -> Figure:
+) -> go_Figure:
     """
     Plots a sorted and re-formatted horizontal bar chart.
 
@@ -368,7 +389,7 @@ def plotly_matrix_heatmap(
     x_categorical: List,
     y_categorical: List,
     plot_title: str = "",
-) -> Figure:
+) -> go_Figure:
     """
     Plots a matrix heatmap.
 
@@ -462,7 +483,7 @@ def plotly_matrix_heatmap(
         else:
             # Modify color based on value relative to low threshold
             color_scale.append([1, f"rgba(0, 86, 0, {max_value/TIER_HIGH_THRESH})"])
-
+    # TODO: Fix color scale
     # TODO: Add in other case checks
 
     # Plot
