@@ -1,5 +1,7 @@
 import importlib
 
+import pandas as pd
+
 AVAILABLE_INDEX = ["SP500"]
 
 
@@ -39,17 +41,14 @@ class IndexView(object):
         # Value from property
         self._summary = None
 
-        # TODO: Add category differentiation
-        # TODO: Count categories
-        # TODO: Valuation based on sampling of different industries?
-
     @property
     def summary(self):
         """
         High level summary of specified market index.
         1) Number of stocks by sector
-        2)
-        3)
+        2) Periodic performance
+        3) Annual performance
+        4) Top performers
 
         """
         if self._summary is None:
@@ -61,7 +60,8 @@ class IndexView(object):
             ticker_sector = self._column_names["ticker_sector"]
 
             # Number of stocks by sector
-            index_info["sector_count"] = (
+            sector_count = dict()
+            sector_count["sector_count"] = (
                 data[
                     [
                         ticker_symbol,
@@ -72,7 +72,11 @@ class IndexView(object):
                 .count()
                 .to_dict()[ticker_symbol]
             )
+            index_info["sector_count"] = sector_count
 
             self._summary = index_info
 
-        print(self._summary)
+        # Populate sector count in pandas form
+        sector_count = pd.DataFrame.from_dict(self._summary["sector_count"])
+
+        return None
