@@ -1,4 +1,16 @@
-from stock_market.data import SP500
+# Data
+# ----
 
-# Stock categories (from S&P 500)
-STOCK_CATEGORY = [industry.lower() for industry in list(set(SP500.Sector))]
+# Ipo
+IPO_URL = "https://www.marketwatch.com/tools/ipo-calendar"
+
+
+# Analysis
+# --------
+
+# Index: SP500
+SP500_URL = "https://www.marketwatch.com/investing/index/spx"
+# WebScrape constants
+PERFORMANCE_PERIODIC: str = "performance"
+PERFORMANCE_TOP_STOCKS: str = "ByIndexGainers"
+PERFORMERS_BOTTOM_STOCKS: str = "ByIndexDecliners"
