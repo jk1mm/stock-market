@@ -2,8 +2,7 @@ import bs4
 import pandas as pd
 import requests
 
-# URL with IPO information (from MarketWatch)
-IPO_URL = "https://www.marketwatch.com/tools/ipo-calendar"
+from stock_market.data.constants import IPO_URL
 
 
 class IPO(object):

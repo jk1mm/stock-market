@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 
 from stock_market.data.constants import (
-    SP500_LINK,
+    SP500_URL,
     PERFORMANCE_PERIODIC,
     PERFORMANCE_TOP_STOCKS,
     PERFORMERS_BOTTOM_STOCKS,
@@ -139,7 +139,7 @@ def _sp500():
 
         # Web Scraped data
         ws_metric = bs4.BeautifulSoup(
-            requests.get(SP500_LINK).content, "html.parser"
+            requests.get(SP500_URL).content, "html.parser"
         ).find("div", {"class": regex})
 
         # Check if data return requires a webscrape fix
