@@ -95,17 +95,33 @@ def _sp500():
     performance_top_stocks = "ByIndexGainers"
     performance_bottom_stocks = "ByIndexDecliners"
 
-    # Regex search for the above metrics
-    regex = re.compile(
-        f"element element--table ({performance_by_period}|{performance_top_stocks}|{performance_bottom_stocks})"
-    )
-    # Web Scraped data
-    data_ws = bs4.BeautifulSoup(
-        requests.get(index_url).content, "html.parser"
-    ).find_all("div", {"class": regex})
+    # Search and store the following information
+    ws_dict = dict()
+    for metric in [
+        performance_by_period,
+        performance_top_stocks,
+        performance_bottom_stocks,
+    ]:
+        # Regex search for the above metrics
+        regex = re.compile(f"element element--table ({metric})")
 
-    # Extract:
-    # Periodic performance
-    # Annual performance
-    # Top performers
-    None
+        # Web Scraped data
+        ws_metric = bs4.BeautifulSoup(
+            requests.get(index_url).content, "html.parser"
+        ).find("div", {"class": regex})
+
+        # Check if data return requires a webscrape fix
+        if len(ws_metric) == 0:
+            print(f"The web-scrape metric name seems to be changed for {metric}.")
+            return None
+
+        ws_dict[metric] = ws_metric
+
+    # Extract data points for each metric
+
+    # 1) Performance per periods
+    data_1 = dict()
+    data = ws_dict[performance_by_period].find_all("td")
+    for i in range(0, len(data), 2):
+        # Every even index represents the info and odd index represents the value
+        data_1[data[i].text.replace("\n", "")] = data[i + 1].text.replace("\n", "")
