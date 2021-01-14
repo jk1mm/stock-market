@@ -1,6 +1,9 @@
 import importlib
+import re
 
+import bs4
 import pandas as pd
+import requests
 
 AVAILABLE_INDEX = ["SP500"]
 
@@ -80,3 +83,29 @@ class IndexView(object):
         sector_count = pd.DataFrame.from_dict(self._summary["sector_count"])
 
         return None
+
+
+# Scraper for sp500
+def _sp500():
+    # URL
+    index_url = "https://www.marketwatch.com/investing/index/spx"
+
+    # Metrics
+    performance_by_period = "performance"
+    performance_top_stocks = "ByIndexGainers"
+    performance_bottom_stocks = "ByIndexDecliners"
+
+    # Regex search for the above metrics
+    regex = re.compile(
+        f"element element--table ({performance_by_period}|{performance_top_stocks}|{performance_bottom_stocks})"
+    )
+    # Web Scraped data
+    data_ws = bs4.BeautifulSoup(
+        requests.get(index_url).content, "html.parser"
+    ).find_all("div", {"class": regex})
+
+    # Extract:
+    # Periodic performance
+    # Annual performance
+    # Top performers
+    None
