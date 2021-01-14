@@ -166,7 +166,7 @@ class RecentIPO(object):
         return self._overall_summary["stats"]
         # TODO: Best OSD (using probability) by number of stocks and percent increase!!
 
-    def individual_summary(self, ticker: str):
+    def individual_summary(self, ticker: str) -> pd.DataFrame:
         """
         Individual summary of recent IPOs.
 

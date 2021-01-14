@@ -1,4 +1,4 @@
-Symbol,Name,Sector
+Ticker,Name,Sector
 MMM,3M Company,Industrials
 AOS,A.O. Smith Corp,Industrials
 ABT,Abbott Laboratories,Health Care
@@ -44,7 +44,6 @@ ANSS,ANSYS,Information Technology
 ANTM,Anthem,Health Care
 AON,Aon plc,Financials
 APA,Apache Corporation,Energy
-AIV,Apartment Investment & Management,Real Estate
 AAPL,Apple Inc.,Information Technology
 AMAT,Applied Materials Inc.,Information Technology
 APTV,Aptiv PLC,Consumer Discretionary
@@ -109,6 +108,7 @@ CTAS,Cintas Corporation,Industrials
 CSCO,Cisco Systems,Information Technology
 C,Citigroup Inc.,Financials
 CFG,Citizens Financial Group,Financials
+CTLT,Catalent,Health Care
 CTXS,Citrix Systems,Information Technology
 CME,CME Group Inc.,Financials
 CMS,CMS Energy,Utilities
@@ -126,7 +126,6 @@ CPRT,Copart Inc,Industrials
 GLW,Corning Inc.,Information Technology
 CTVA,Corteva,Materials
 COST,Costco Wholesale Corp.,Consumer Staples
-COTY,Coty Inc,Consumer Staples
 CCI,Crown Castle International Corp.,Real Estate
 CSX,CSX Corp.,Industrials
 CMI,Cummins Inc.,Industrials
@@ -157,9 +156,9 @@ DUK,Duke Energy,Utilities
 DRE,Duke Realty Corp,Real Estate
 DD,DuPont de Nemours Inc,Materials
 DXC,DXC Technology,Information Technology
-ETFC,E*Trade,Financials
 EMN,Eastman Chemical,Materials
 ETN,Eaton Corporation,Industrials
+ETSY,Etsy,Consumer Discretionary
 EBAY,eBay Inc.,Consumer Discretionary
 ECL,Ecolab Inc.,Materials
 EIX,Edison Int'l,Utilities
@@ -216,7 +215,6 @@ GPN,Global Payments Inc.,Information Technology
 GL,Globe Life Inc.,Financials
 GS,Goldman Sachs Group,Financials
 GWW,Grainger (W.W.) Inc.,Industrials
-HRB,H&R Block,Consumer Discretionary
 HAL,Halliburton Co.,Energy
 HBI,Hanesbrands Inc,Consumer Discretionary
 HIG,Hartford Financial Svc.Gp.,Financials
@@ -273,7 +271,6 @@ KMB,Kimberly-Clark,Consumer Staples
 KIM,Kimco Realty,Real Estate
 KMI,Kinder Morgan,Energy
 KLAC,KLA Corporation,Information Technology
-KSS,Kohl's Corp.,Consumer Discretionary
 KHC,Kraft Heinz Co,Consumer Staples
 KR,Kroger Co.,Consumer Staples
 LB,L Brands Inc.,Consumer Discretionary
@@ -337,7 +334,6 @@ NEE,NextEra Energy,Utilities
 NLSN,Nielsen Holdings,Industrials
 NKE,Nike Inc.,Consumer Discretionary
 NI,NiSource Inc.,Utilities
-NBL,Noble Energy,Energy
 NSC,Norfolk Southern Corp.,Industrials
 NTRS,Northern Trust Corp.,Financials
 NOC,Northrop Grumman,Industrials
@@ -371,6 +367,7 @@ PSX,Phillips 66,Energy
 PNW,Pinnacle West Capital,Utilities
 PXD,Pioneer Natural Resources,Energy
 PNC,PNC Financial Services,Financials
+POOL,Pool Corporation,Consumer Discretionary
 PPG,PPG Industries,Materials
 PPL,PPL Corp.,Utilities
 PFG,Principal Financial Group,Financials
@@ -434,6 +431,8 @@ TEL,TE Connectivity Ltd.,Information Technology
 FTI,TechnipFMC,Energy
 TDY,Teledyne Technologies,Industrials
 TFX,Teleflex,Health Care
+TER,Teradyne,Information Technology
+TSLA,Tesla Inc.,Consumer Discretionary
 TXN,Texas Instruments,Information Technology
 TXT,Textron Inc.,Industrials
 BK,The Bank of New York Mellon,Financials
@@ -444,7 +443,6 @@ MOS,The Mosaic Company,Materials
 TRV,The Travelers Companies Inc.,Financials
 DIS,The Walt Disney Company,Communication Services
 TMO,Thermo Fisher Scientific,Health Care
-TIF,Tiffany & Co.,Consumer Discretionary
 TJX,TJX Companies Inc.,Consumer Discretionary
 TSCO,Tractor Supply Company,Consumer Discretionary
 TT,Trane Technologies plc,Industrials
@@ -475,6 +473,7 @@ VRTX,Vertex Pharmaceuticals Inc,Health Care
 VFC,VF Corporation,Consumer Discretionary
 VIAC,ViacomCBS,Communication Services
 V,Visa Inc.,Information Technology
+VNT,Vontier,Information Technology
 VNO,Vornado Realty Trust,Real Estate
 VMC,Vulcan Materials,Materials
 WRB,W. R. Berkley Corporation,Financials
