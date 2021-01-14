@@ -1,6 +1,8 @@
 from stock_market.data.constants import *
+import validators
 
 
 def test_constants():
-    # Test stock category
-    assert len(STOCK_CATEGORY) == 11
+    # Test URLs
+    assert validators.url(IPO_URL)
+    assert validators.url(SP500_URL)
