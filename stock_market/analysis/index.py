@@ -1,10 +1,17 @@
 import importlib
 import re
-from typing import Optional
+from typing import Optional, Tuple
 
 import bs4
 import pandas as pd
 import requests
+
+from stock_market.data.constants import (
+    SP500_LINK,
+    PERFORMANCE_PERIODIC,
+    PERFORMANCE_TOP_STOCKS,
+    PERFORMERS_BOTTOM_STOCKS,
+)
 
 AVAILABLE_INDEX = ["SP500"]
 
@@ -43,22 +50,17 @@ class IndexView(object):
         self.sector_list = list(set(data[self._column_names["ticker_sector"]]))
 
         # Value from property
-        self._summary = None
+        self._summary = dict()
 
     @property
-    def summary(self):
+    def summary_sector_view(self) -> pd.DataFrame:
         """
-        High level summary of specified market index.
-        1) Number of stocks by sector
-        2) Periodic performance
-        3) Annual performance
-        4) Top performers
+        Summary of number of stocks by sector.
 
         """
-        if self._summary is None:
+        if "sector_view" not in self._summary:
             # Setup for metric population
             data = self.data
-            sector_list = self.sector_list
             index_info = dict()
             ticker_symbol = self._column_names["ticker_symbol"]
             ticker_sector = self._column_names["ticker_sector"]
@@ -76,39 +78,68 @@ class IndexView(object):
                 .count()
                 .to_dict()[ticker_symbol]
             )
-            index_info["sector_count"] = sector_count
 
-            self._summary = index_info
+            self._summary["sector_view"] = sector_count
 
         # Populate sector count in pandas form
-        sector_count = pd.DataFrame.from_dict(self._summary["sector_count"])
+        sector_count = pd.DataFrame.from_dict(self._summary["sector_view"])
 
-        return None
+        return sector_count
+
+    @property
+    def summary_performance(self) -> pd.DataFrame:
+        """
+        High level summary of index's periodic performance.
+
+        """
+        if "performance" not in self._summary:
+            # Run scrape function to extract all metrics in one go
+            index_scrape = _sp500()
+            self._summary["performance"] = index_scrape[PERFORMANCE_PERIODIC]
+            self._summary["top_stocks"] = index_scrape[PERFORMANCE_TOP_STOCKS]
+            self._summary["bottom_stocks"] = index_scrape[PERFORMERS_BOTTOM_STOCKS]
+
+        periodic_performance = pd.DataFrame.from_dict(
+            {"periodic_performance": self._summary["performance"]}
+        )
+
+        # TODO: Properly sort the periodic time periods
+
+        return periodic_performance
+
+    @property
+    def summary_stocks_today(self) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        """
+        Summary of today's top and bottom stock performances.
+
+        """
+        if ("top_stocks" not in self._summary) or (
+            "bottom_stocks" not in self._summary
+        ):
+            # Run scrape function to extract all metrics in one go
+            index_scrape = _sp500()
+            self._summary["performance"] = index_scrape[PERFORMANCE_PERIODIC]
+            self._summary["top_stocks"] = index_scrape[PERFORMANCE_TOP_STOCKS]
+            self._summary["bottom_stocks"] = index_scrape[PERFORMERS_BOTTOM_STOCKS]
+
+        return self._summary["top_stocks"], self._summary["bottom_stocks"]
 
 
 # Scraper for sp500
 def _sp500():
-    # URL
-    index_url = "https://www.marketwatch.com/investing/index/spx"
-
-    # Metrics
-    performance_by_period = "performance"
-    performance_top_stocks = "ByIndexGainers"
-    performance_bottom_stocks = "ByIndexDecliners"
-
     # Search and store the following information
     ws_dict = dict()
     for metric in [
-        performance_by_period,
-        performance_top_stocks,
-        performance_bottom_stocks,
+        PERFORMANCE_PERIODIC,
+        PERFORMANCE_TOP_STOCKS,
+        PERFORMERS_BOTTOM_STOCKS,
     ]:
         # Regex search for the above metrics
         regex = re.compile(f"element element--table ({metric})")
 
         # Web Scraped data
         ws_metric = bs4.BeautifulSoup(
-            requests.get(index_url).content, "html.parser"
+            requests.get(SP500_LINK).content, "html.parser"
         ).find("div", {"class": regex})
 
         # Check if data return requires a webscrape fix
@@ -123,21 +154,21 @@ def _sp500():
 
     # 1) Performance per periods
     data_1 = dict()
-    data = ws_dict[performance_by_period].find_all("td")
+    data = ws_dict[PERFORMANCE_PERIODIC].find_all("td")
     for i in range(0, len(data), 2):
         # Every even index represents the info and odd index represents the value
         data_1[data[i].text.replace("\n", "")] = data[i + 1].text.replace("\n", "")
 
     # 2) Top performing stocks today
-    data_2 = _stock_performers_ws(data=ws_dict[performance_top_stocks])
+    data_2 = _stock_performers_ws(data=ws_dict[PERFORMANCE_TOP_STOCKS])
 
     # 3) Bottom performing stocks today
-    data_3 = _stock_performers_ws(data=ws_dict[performance_bottom_stocks])
+    data_3 = _stock_performers_ws(data=ws_dict[PERFORMERS_BOTTOM_STOCKS])
 
     # All data store
-    metric_data[performance_by_period] = data_1
-    metric_data[performance_top_stocks] = data_2
-    metric_data[performance_bottom_stocks] = data_3
+    metric_data[PERFORMANCE_PERIODIC] = data_1
+    metric_data[PERFORMANCE_TOP_STOCKS] = data_2
+    metric_data[PERFORMERS_BOTTOM_STOCKS] = data_3
 
     return metric_data
 
