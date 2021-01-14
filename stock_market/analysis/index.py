@@ -1,5 +1,6 @@
 import importlib
 import re
+from typing import Optional
 
 import bs4
 import pandas as pd
@@ -118,6 +119,7 @@ def _sp500():
         ws_dict[metric] = ws_metric
 
     # Extract data points for each metric
+    metric_data = {}
 
     # 1) Performance per periods
     data_1 = dict()
@@ -125,3 +127,45 @@ def _sp500():
     for i in range(0, len(data), 2):
         # Every even index represents the info and odd index represents the value
         data_1[data[i].text.replace("\n", "")] = data[i + 1].text.replace("\n", "")
+
+    # 2) Top performing stocks today
+    data_2 = _stock_performers_ws(data=ws_dict[performance_top_stocks])
+
+    # 3) Bottom performing stocks today
+    data_3 = _stock_performers_ws(data=ws_dict[performance_bottom_stocks])
+
+    # All data store
+    metric_data[performance_by_period] = data_1
+    metric_data[performance_top_stocks] = data_2
+    metric_data[performance_bottom_stocks] = data_3
+
+    return metric_data
+
+
+# Helper function for _sp500()
+def _stock_performers_ws(
+    data: bs4.element.Tag,
+) -> Optional[pd.DataFrame]:
+    """
+    Web scrapes the top and bottom performing stocks for an index in MarketWatch.
+
+    """
+    data_ws = data.find_all("tr")
+
+    if len(data_ws) == 0:
+        return None
+
+    # Setup stock data
+    stock_data = []
+
+    # First row is the column names
+    col_names = list(filter(None, data_ws[0].text.split("\n")))
+
+    # Extract all other row info
+    for row in range(1, len(data_ws)):
+        stock_data.append(list(filter(None, data_ws[row].text.split("\n"))))
+
+    # Form pandas dataframe
+    data_df = pd.DataFrame(stock_data, columns=col_names)
+
+    return data_df
