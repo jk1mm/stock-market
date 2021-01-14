@@ -30,7 +30,8 @@ class IndexView(object):
     def __init__(self, index: str):
 
         # Check availability of index
-        if (index_name := index.upper()) not in AVAILABLE_INDEX:
+        index_name = index.upper()
+        if index_name not in AVAILABLE_INDEX:
             raise Warning(
                 f"Please select from the available indexes: {AVAILABLE_INDEX}"
             )
@@ -61,7 +62,6 @@ class IndexView(object):
         if "sector_view" not in self._summary:
             # Setup for metric population
             data = self.data
-            index_info = dict()
             ticker_symbol = self._column_names["ticker_symbol"]
             ticker_sector = self._column_names["ticker_sector"]
 
@@ -127,6 +127,10 @@ class IndexView(object):
 
 # Scraper for sp500
 def _sp500():
+    """
+    Scraping SP500 information from MarketWatch. (link in constants folder in data directory)
+
+    """
     # Search and store the following information
     ws_dict = dict()
     for metric in [
