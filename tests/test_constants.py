@@ -1,8 +1,8 @@
 from stock_market.data.constants import *
-import validators
+from urllib.parse import urlparse
 
 
 def test_constants():
     # Test URLs
-    assert validators.url(IPO_URL)
-    assert validators.url(SP500_URL)
+    assert urlparse(IPO_URL)
+    assert urlparse(SP500_URL)
