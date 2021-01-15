@@ -1,8 +1,9 @@
-from stock_market.data import get_ticker
-from typing import Optional
-import pandas as pd
 import warnings
+from typing import Optional
 
+import pandas as pd
+
+from stock_market.data import get_ticker
 
 MARKET_TIME = [
     "open",  # at market open
