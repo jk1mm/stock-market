@@ -50,6 +50,12 @@ def stock_profit(
         Net profit, in the respective exchange currency.
 
     """
+    # Check if purchase or sell time is valid
+    purchase_time = purchase_time.lower()
+    sell_time = sell_time.lower()
+    if purchase_time not in MARKET_TIME or sell_time not in MARKET_TIME:
+        raise Exception(f"Populate valid time metrics: {MARKET_TIME}")
+
     # TODO: Think of a more efficient way to do this
 
     # Call the ticker data
@@ -74,11 +80,20 @@ def stock_profit(
             "Sell date has been shifted back to the previous stock in market day."
         )
 
-    # Check if purchase or sell time is valid
-    if purchase_time.lower() not in MARKET_TIME or sell_time.lower() not in MARKET_TIME:
-        raise Exception(f"Populate valid time metrics: {MARKET_TIME}")
-
     # Re-format column names for standardization
     ticker_history.columns = ["high", "low", "open", "close", "volume", "adj close"]
 
-    return ticker_history
+    # Calculation
+
+    # Edge case: for length == 1, raise warning for potential inaccurate results
+    if len(ticker_history) == 1:
+        warnings.warn(
+            "Result may be inaccurate since buying and selling happens on the same day."
+        )
+
+    # Calculate
+    net_profit = (ticker_history.loc[:, sell_time][-1] * quantity) - (
+        ticker_history.loc[:, purchase_time][0] * quantity
+    )
+
+    return net_profit
