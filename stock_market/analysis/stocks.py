@@ -1,8 +1,15 @@
 from stock_market.data import get_ticker
 from typing import Optional
+import pandas as pd
+import warnings
 
 
-MARKET_TIME = ["open", "close"]
+MARKET_TIME = [
+    "open",  # at market open
+    "close",  # at market close
+    "high",  # at day high price
+    "low",  # at day low price
+]
 
 
 def stock_profit(
@@ -43,5 +50,35 @@ def stock_profit(
         Net profit, in the respective exchange currency.
 
     """
+    # TODO: Think of a more efficient way to do this
 
-    None
+    # Call the ticker data
+    ticker_history = get_ticker(
+        ticker=ticker, start_date=purchase_date, end_date=sell_date, new_metrics=False
+    )
+
+    # If no data is returned (from invalid date range)
+    if ticker_history is None:
+        print("No stock history for requested date range.")
+        return None
+
+    # Checking validity of the requested days
+
+    # For buy date, shift to next nearest day if invalid
+    if pd.to_datetime(purchase_date) != ticker_history.index[0]:
+        warnings.warn("Purchase date has been shifted to the next stock in market day.")
+
+    # For sell date, shift to previous nearest day
+    if pd.to_datetime(sell_date) != ticker_history.index[-1]:
+        warnings.warn(
+            "Sell date has been shifted back to the previous stock in market day."
+        )
+
+    # Check if purchase or sell time is valid
+    if purchase_time.lower() not in MARKET_TIME or sell_time.lower() not in MARKET_TIME:
+        raise Exception(f"Populate valid time metrics: {MARKET_TIME}")
+
+    # Re-format column names for standardization
+    ticker_history.columns = ["high", "low", "open", "close", "volume", "adj close"]
+
+    return ticker_history
