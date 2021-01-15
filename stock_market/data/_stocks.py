@@ -11,6 +11,7 @@ def get_ticker(
     ticker: str,
     start_date: str,
     end_date: str = None,
+    new_metrics: bool = True,
 ) -> Optional[pd.DataFrame]:
     """
     Extracts stock prices over a date period from Yahoo Finance.
@@ -25,6 +26,9 @@ def get_ticker(
 
     end_date: str, default None
         End date of stock information. If None, use current date.
+
+    new_metrics: bool, default True
+        Option to get additional metrics.
 
     Returns
     -------
@@ -43,10 +47,10 @@ def get_ticker(
     try:
         stock_data = data.DataReader(ticker, "yahoo", start_date, end_date)
     except KeyError:
-        stock_data = None
+        return None
 
-    # Adding new metrics
-    if stock_data is not None:
+    # Adding new metrics if requested
+    if new_metrics:
 
         # 1) Day to day percent change
         if len(stock_data) >= 2:
