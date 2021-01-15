@@ -38,7 +38,14 @@ work in the making.
     1) General success metrics on recent IPO bubble 
     2) Optimal sell day analysis
     3) Individual stock performance views
+  
+
 - **Index**: Analysis on a market index
     1) Stock categorization summary by industry
     2) Index performance for different periodic times
     3) Today's top and bottom performing stocks
+
+
+- **Stocks**: Stock net profit calculator
+  1) Supposed net gain on a stock for a buy and sell on a specified 
+     date period
