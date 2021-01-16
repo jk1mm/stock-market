@@ -154,4 +154,18 @@ def stock_chart(
         except RemoteDataError:
             invalid_stocks.append(stock)
 
+    # Case when all stocks are invalid
+    if len(stocks_info.keys()) == 0:
+        raise Exception(
+            "All stock(s) specified are either invalid or was not in the market for requested"
+            "date range. Please re-specify with valid parameters."
+        )
+
+    # Warning raise for presence of some invalid cases (but some are valid)
+    if len(invalid_stocks) > 0:
+        warnings.warn(
+            f"The following list of stock(s) were skipped due to invalid ticker or "
+            f"date range: {invalid_stocks}"
+        )
+
     return None
