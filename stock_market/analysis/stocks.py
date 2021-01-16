@@ -2,6 +2,7 @@ import warnings
 from typing import Optional, List
 
 import pandas as pd
+from pandas_datareader._utils import RemoteDataError
 
 from stock_market.data import get_ticker
 
@@ -124,4 +125,33 @@ def stock_chart(
     stock_view:
 
     """
-    None
+    # Unique list of stocks (lower cased)
+    stocks = list(set([stock.lower() for stock in stocks]))
+
+    # Setup: storing stock information
+    stocks_info = dict()
+    invalid_stocks = list()
+
+    # First check validity of tickers in list. Ticker is invalid if:
+    #  - Invalid ticker (KeyError)
+    #  - Ticker is not in the market within the date range requested (return None)
+    for stock in stocks:
+        try:
+            # Attempt stock data call
+            stock_pd = get_ticker(
+                ticker=stock, start_date=start_date, end_date=end_date
+            )
+
+            # Date range is invalid (but stock exists)
+            if stock_pd is None:
+                invalid_stocks.append(stock)  # Add stock to invalid list
+                continue
+
+            # If valid, add data to stock info
+            stocks_info[stock] = stock_pd
+
+        # Invalid ticker
+        except RemoteDataError:
+            invalid_stocks.append(stock)
+
+    return None
