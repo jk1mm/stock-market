@@ -1,5 +1,5 @@
 import warnings
-from typing import Optional
+from typing import Optional, List
 
 import pandas as pd
 
@@ -98,3 +98,30 @@ def stock_profit(
     )
 
     return net_profit
+
+
+def stock_chart(
+    stocks: List[str],
+    start_date: str,
+    end_date: str = None,
+):
+    """
+    Stock performance visualization for .
+
+    Parameters
+    ----------
+    stocks: List[str]
+        List of stocks to see performance charts.
+
+    start_date: str
+        Start date of stock information. (e.g. 2020-01-01, 2020/01/01, January 1 2020)
+
+    end_date: str, default None
+        End date of stock information. If None, use current date.
+
+    Returns
+    -------
+    stock_view:
+
+    """
+    None
