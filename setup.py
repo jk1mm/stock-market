@@ -16,5 +16,6 @@ setup(
         "requests>=2.25.1",
         "plotly>=4.14.1",
     ],
+    include_package_data=True,
     python_requires=">=3.6",
 )
