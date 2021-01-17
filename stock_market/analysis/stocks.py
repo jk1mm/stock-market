@@ -2,7 +2,9 @@ import warnings
 from typing import Optional, List
 
 import pandas as pd
+import plotly.graph_objects as go
 from pandas_datareader._utils import RemoteDataError
+from plotly.subplots import make_subplots
 
 from stock_market.data import get_ticker
 
@@ -107,7 +109,7 @@ def stock_chart(
     end_date: str = None,
 ):
     """
-    Stock performance visualization for .
+    View stock performance chart for requested list of stock(s).
 
     Parameters
     ----------
@@ -155,7 +157,9 @@ def stock_chart(
             invalid_stocks.append(stock)
 
     # Case when all stocks are invalid
-    if len(stocks_info.keys()) == 0:
+    valid_tickers = list(stocks_info.keys())
+    valid_ticker_count = len(valid_tickers)
+    if valid_ticker_count == 0:
         raise Exception(
             "All stock(s) specified are either invalid or was not in the market for requested"
             "date range. Please re-specify with valid parameters."
@@ -168,4 +172,16 @@ def stock_chart(
             f"date range: {invalid_stocks}"
         )
 
-    return None
+    # Setup the plot grid
+    chart_grid = make_subplots(rows=valid_ticker_count, cols=1, shared_xaxes=True)
+
+    # Add charts one by one
+    value_col = "Close"
+    for i in range(1, valid_ticker_count + 1):
+        data = stocks_info[valid_tickers[i - 1]]
+        chart_grid.add_trace(go.Scatter(x=data.index, y=data[value_col]), row=i, col=1)
+
+    # TODO: Drop down to switch values for different metric views
+    # For the ones with the same y axis values, make another plot/chart
+
+    return chart_grid.show()
