@@ -68,6 +68,22 @@ def test_stock_chart():
             end_date="2015-01-08",
         )
 
+    # Warning: Some valid and some invalid stocks
+    with pytest.warns(UserWarning):
+        stock_chart(
+            stocks=["tsla", "invalid1", "invalid2"],
+            start_date="2020-01-01",
+            end_date="2020-01-08",
+        )
+
+    # Valid case: return output check
+    valid_chart_obj = stock_chart(
+        stocks=["nio"],
+        start_date="2020-05-01",
+        end_date="2020-08-25",
+    )
+    assert type(valid_chart_obj) == go_Figure
+
 
 def test_helper_functions():
     # Test _unique_ordered_list
