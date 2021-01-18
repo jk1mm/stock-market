@@ -1,8 +1,13 @@
-from stock_market.data import get_ticker
-from typing import Optional
-import pandas as pd
 import warnings
+from typing import Optional, List
 
+import pandas as pd
+import plotly.graph_objects as go
+from pandas_datareader._utils import RemoteDataError
+from plotly.graph_objs._figure import Figure as go_Figure
+from plotly.subplots import make_subplots
+
+from stock_market.data import get_ticker
 
 MARKET_TIME = [
     "open",  # at market open
@@ -97,3 +102,188 @@ def stock_profit(
     )
 
     return net_profit
+
+
+def stock_chart(
+    stocks: List[str],
+    start_date: str,
+    end_date: str = None,
+) -> go_Figure:
+    """
+    View stock performance chart for requested list of stock(s).
+
+    Parameters
+    ----------
+    stocks: List[str]
+        List of stocks to see performance charts.
+
+    start_date: str
+        Start date of stock information. (e.g. 2020-01-01, 2020/01/01, January 1 2020)
+
+    end_date: str, default None
+        End date of stock information. If None, use current date.
+
+    Returns
+    -------
+    chart_grid: go_Figure
+        The plotly object with the stock price comparison. Use chart_grid.show() for output.
+
+    """
+    # Constant parameters
+    OPACITY = 0.8
+    BAR_SHRINKAGE = 2
+    YAXIS_RANGE_EXTENSION = 0.4
+
+    # Unique list of stocks (lower cased)
+    stocks = _unique_ordered_list([stock.lower() for stock in stocks])
+    stock_price_col = "Close"
+    stock_volume_col = "Volume"
+
+    # Setup: storing stock information
+    stocks_info = dict()
+    invalid_stocks = list()
+
+    # First check validity of tickers in list. Ticker is invalid if:
+    #  - Invalid ticker (KeyError)
+    #  - Ticker is not in the market within the date range requested (return None)
+    for stock in stocks:
+        try:
+            # Attempt stock data call
+            stock_pd = get_ticker(
+                ticker=stock, start_date=start_date, end_date=end_date
+            )
+
+            # Date range is invalid (but stock exists)
+            if stock_pd is None:
+                invalid_stocks.append(stock)  # Add stock to invalid list
+                continue
+
+            # If valid, add data to stock info
+            stocks_info[stock] = stock_pd[[stock_price_col, stock_volume_col]]
+
+        # Invalid ticker
+        except RemoteDataError:
+            invalid_stocks.append(stock)
+
+    # Case when all stocks are invalid
+    valid_tickers = list(stocks_info.keys())
+    valid_ticker_count = len(valid_tickers)
+    if valid_ticker_count == 0:
+        raise Exception(
+            "All stock(s) specified are either invalid or was not in the market for requested"
+            "date range. Please re-specify with valid parameters."
+        )
+
+    # Warning raise for presence of some invalid cases (but some are valid)
+    if len(invalid_stocks) > 0:
+        warnings.warn(
+            f"The following list of stock(s) were skipped due to invalid ticker or "
+            f"date range: {invalid_stocks}"
+        )
+
+    # Setup specs
+    specs = list()
+    for i in range(valid_ticker_count):
+        specs.append([{"secondary_y": True}])
+
+    # Setup the plot grid
+    chart_grid = make_subplots(
+        rows=valid_ticker_count,
+        cols=1,
+        shared_xaxes=True,
+        specs=specs,
+        subplot_titles=[name.upper() for name in valid_tickers],
+    )
+
+    # Add charts one by one
+    for i in range(1, valid_ticker_count + 1):
+        ticker_name = valid_tickers[i - 1]
+        data = stocks_info[ticker_name]
+
+        # Line chart: Price
+        chart_grid.add_trace(
+            go.Scatter(
+                x=data.index,
+                y=data[stock_price_col],
+                name="Price",
+                showlegend=False,
+            ),
+            row=i,
+            col=1,
+            secondary_y=False,
+        )
+
+        # Bar chart: Volume
+        chart_grid.add_trace(
+            go.Bar(
+                x=data.index,
+                y=data[stock_volume_col],
+                marker_color="#FC766A",
+                name="Volume Traded",
+                opacity=OPACITY,
+                showlegend=False,
+            ),
+            row=i,
+            col=1,
+            secondary_y=True,
+        )
+
+        # Y-axis modifier
+        line_val_extend = (
+            max(data[stock_price_col]) - min(data[stock_price_col])
+        ) * YAXIS_RANGE_EXTENSION
+
+        yaxis_update_max = max(data[stock_price_col]) + line_val_extend
+        yaxis_update_min = min(data[stock_price_col]) - line_val_extend
+        if yaxis_update_min < 0:
+            yaxis_update_min = 0
+
+        # Line modifier
+        chart_grid.update_yaxes(
+            title_text="Price",
+            range=[yaxis_update_min, yaxis_update_max],
+            row=i,
+            col=1,
+            secondary_y=False,
+        )
+
+        # Bar modifier
+        chart_grid.update_yaxes(
+            showticklabels=False,
+            range=[0, data[stock_volume_col].max() * BAR_SHRINKAGE],
+            row=i,
+            col=1,
+            secondary_y=True,
+        )
+
+        # Add hover lines to each stock
+        chart_grid.update_yaxes(
+            showspikes=True,
+            row=i,
+            col=1,
+        )
+
+        # Add date tick labels for each stock
+        chart_grid.update_xaxes(
+            showticklabels=True,
+            row=i,
+            col=1,
+        )
+
+    # Formats
+    chart_grid.update_yaxes(
+        tickprefix="$",
+        secondary_y=False,
+    )  # Adding $ to price values
+    chart_grid.update_layout(title_text="Stock Price & Volume Comparison")
+
+    return chart_grid
+
+
+# Helper functions
+def _unique_ordered_list(_list: list):
+    """
+    Returns a unique list preserving the original order.
+    """
+    _set = set()
+    return [val for val in _list if not (val in _set or _set.add(val))]

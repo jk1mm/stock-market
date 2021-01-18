@@ -589,8 +589,8 @@ def plotly_stock_history(
 
     Returns
     -------
-    fig_heatmap: Figure
-        The plotly graph object containing heatmap content.
+    fig_stock_history: Figure
+        The plotly graph object containing stock history content.
 
     """
     # Constant parameters
