@@ -129,7 +129,7 @@ def stock_chart(
     """
     # Constant parameters
     OPACITY = 0.8
-    BAR_SHRINKAGE = 3
+    BAR_SHRINKAGE = 2
     YAXIS_RANGE_EXTENSION = 0.4
 
     # Unique list of stocks (lower cased)
@@ -190,6 +190,7 @@ def stock_chart(
         cols=1,
         shared_xaxes=True,
         specs=specs,
+        subplot_titles=[name.upper() for name in valid_tickers],
     )
 
     # Add charts one by one
@@ -200,7 +201,10 @@ def stock_chart(
         # Line chart: Price
         chart_grid.add_trace(
             go.Scatter(
-                x=data.index, y=data[stock_price_col], name=f"{ticker_name}".upper()
+                x=data.index,
+                y=data[stock_price_col],
+                name="Price",
+                showlegend=False,
             ),
             row=i,
             col=1,
@@ -213,7 +217,9 @@ def stock_chart(
                 x=data.index,
                 y=data[stock_volume_col],
                 marker_color="#FC766A",
+                name="Volume Traded",
                 opacity=OPACITY,
+                showlegend=False,
             ),
             row=i,
             col=1,
@@ -242,19 +248,26 @@ def stock_chart(
         # Bar modifier
         chart_grid.update_yaxes(
             showticklabels=False,
-            secondary_y=True,
             range=[0, data[stock_volume_col].max() * BAR_SHRINKAGE],
+            row=i,
+            col=1,
+            secondary_y=True,
+        )
+
+        # Add hover lines to each stock
+        chart_grid.update_yaxes(
+            showspikes=True,
+            row=i,
+            col=1,
         )
 
     # Formats
     chart_grid.update_layout(
         xaxis_showticklabels=True, xaxis2_showticklabels=True
     )  # Date axis populate for each charts
-    chart_grid.update_yaxes(tickprefix="$", secondary_y=False,)
-
-    # Drop down menu to change metric views
-
-    # TODO: Use rbc work example for rfm pie chart
-    # For the ones with the same y axis values, make another plot/chart
+    chart_grid.update_yaxes(
+        tickprefix="$",
+        secondary_y=False,
+    )  # Adding $ to price values
 
     return chart_grid.show()
