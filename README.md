@@ -49,3 +49,6 @@ work in the making.
 - **Stocks**: Stock net profit calculator
   1) Supposed net gain on a stock for a buy and sell on a specified 
      date period
+  2) Stock chart comparison between a list of requested stocks to view. 
+     Provides quick and easy way to analyze the performance of each stock
+     aligned by a date range.

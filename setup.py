@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="stock_market",
-    version="1.1.3",
+    version="1.1.4",
     description="Modules related to stock market model.",
     author="Josh Kim",
     author_email="joshkim47@gmail.com",
@@ -16,5 +16,6 @@ setup(
         "requests>=2.25.1",
         "plotly>=4.14.1",
     ],
+    include_package_data=True,
     python_requires=">=3.6",
 )
