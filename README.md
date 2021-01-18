@@ -4,9 +4,16 @@ Stock market related modules packaged into this one repo.
 Market data, analysis, and prediction are some of the upcoming 
 work in the making.
 
+
+## Overview
+<p align="center"><img src="https://github.com/jk1mm/stock-market/blob/release/pic/overview_flowchart.png"></p>
+
+
 ---
 ## Module Listing
- * [Data](https://github.com/jk1mm/stock_market#data)
+ * [Data](https://github.com/jk1mm/stock-market#data)
+ * [Analysis](https://github.com/jk1mm/stock-market#analysis)
+
 
 
 ---
@@ -15,7 +22,33 @@ work in the making.
 
 ### Data
 
-#### [Market data](https://github.com/jk1mm/stock_market/data)
+#### [Market data](stock_market/data)
  - **Stocks**: Get stocks performances for a date range given 
   a ticker symbol
  - **IPO**: Get IPO related data from [MarketWatch](https://www.marketwatch.com/tools/ipo-calendar)
+            and populate new metrics
+ - **Index**: Get market indexes (e.g. S&P 500) 
+
+
+
+### Analysis
+
+#### [Market analysis](stock_market/analysis)
+- **IPO**: Analysis on recent and upcoming IPO stocks
+    1) General success metrics on recent IPO bubble 
+    2) Optimal sell day analysis
+    3) Individual stock performance views
+  
+
+- **Index**: Analysis on a market index
+    1) Stock categorization summary by industry
+    2) Index performance for different periodic times
+    3) Today's top and bottom performing stocks
+
+
+- **Stocks**: Stock net profit calculator
+  1) Supposed net gain on a stock for a buy and sell on a specified 
+     date period
+  2) Stock chart comparison between a list of requested stocks to view. 
+     Provides quick and easy way to analyze the performance of each stock
+     aligned by a date range.

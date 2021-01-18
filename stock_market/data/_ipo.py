@@ -2,8 +2,7 @@ import bs4
 import pandas as pd
 import requests
 
-# URL with IPO information (from MarketWatch)
-IPO_URL = "https://www.marketwatch.com/tools/ipo-calendar"
+from stock_market.data.constants import IPO_URL
 
 
 class IPO(object):
@@ -52,8 +51,8 @@ class IPO(object):
             del data["Symbol"]
 
             # Removal of some characters in Price and Shares variable for type conversion
-            data["Price"] = data["Price"].str.replace("$", "")
-            data["Shares"] = data["Shares"].str.replace(",", "")
+            data["Price"] = data["Price"].str.replace("$", "", regex=True)
+            data["Shares"] = data["Shares"].str.replace(",", "", regex=True)
 
             # Data type conversion
             data = data.astype(
