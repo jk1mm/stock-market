@@ -127,8 +127,15 @@ def stock_chart(
     stock_view:
 
     """
+    # Constant parameters
+    OPACITY = 0.8
+    BAR_SHRINKAGE = 3
+    YAXIS_RANGE_EXTENSION = 0.4
+
     # Unique list of stocks (lower cased)
     stocks = list(set([stock.lower() for stock in stocks]))
+    stock_price_col = "Close"
+    stock_volume_col = "Volume"
 
     # Setup: storing stock information
     stocks_info = dict()
@@ -142,7 +149,7 @@ def stock_chart(
             # Attempt stock data call
             stock_pd = get_ticker(
                 ticker=stock, start_date=start_date, end_date=end_date
-            )
+            )[[stock_price_col, stock_volume_col]]
 
             # Date range is invalid (but stock exists)
             if stock_pd is None:
@@ -172,16 +179,82 @@ def stock_chart(
             f"date range: {invalid_stocks}"
         )
 
+    # Setup specs
+    specs = list()
+    for i in range(valid_ticker_count):
+        specs.append([{"secondary_y": True}])
+
     # Setup the plot grid
-    chart_grid = make_subplots(rows=valid_ticker_count, cols=1, shared_xaxes=True)
+    chart_grid = make_subplots(
+        rows=valid_ticker_count,
+        cols=1,
+        shared_xaxes=True,
+        specs=specs,
+    )
 
     # Add charts one by one
-    value_col = "Close"
     for i in range(1, valid_ticker_count + 1):
-        data = stocks_info[valid_tickers[i - 1]]
-        chart_grid.add_trace(go.Scatter(x=data.index, y=data[value_col]), row=i, col=1)
+        ticker_name = valid_tickers[i - 1]
+        data = stocks_info[ticker_name]
 
-    # TODO: Drop down to switch values for different metric views
+        # Line chart: Price
+        chart_grid.add_trace(
+            go.Scatter(
+                x=data.index, y=data[stock_price_col], name=f"{ticker_name}".upper()
+            ),
+            row=i,
+            col=1,
+            secondary_y=False,
+        )
+
+        # Bar chart: Volume
+        chart_grid.add_trace(
+            go.Bar(
+                x=data.index,
+                y=data[stock_volume_col],
+                marker_color="#FC766A",
+                opacity=OPACITY,
+            ),
+            row=i,
+            col=1,
+            secondary_y=True,
+        )
+
+        # Y-axis modifier
+        line_val_extend = (
+            max(data[stock_price_col]) - min(data[stock_price_col])
+        ) * YAXIS_RANGE_EXTENSION
+
+        yaxis_update_max = max(data[stock_price_col]) + line_val_extend
+        yaxis_update_min = min(data[stock_price_col]) - line_val_extend
+        if yaxis_update_min < 0:
+            yaxis_update_min = 0
+
+        # Line modifier
+        chart_grid.update_yaxes(
+            title_text="Price",
+            range=[yaxis_update_min, yaxis_update_max],
+            row=i,
+            col=1,
+            secondary_y=False,
+        )
+
+        # Bar modifier
+        chart_grid.update_yaxes(
+            showticklabels=False,
+            secondary_y=True,
+            range=[0, data[stock_volume_col].max() * BAR_SHRINKAGE],
+        )
+
+    # Formats
+    chart_grid.update_layout(
+        xaxis_showticklabels=True, xaxis2_showticklabels=True
+    )  # Date axis populate for each charts
+    chart_grid.update_yaxes(tickprefix="$", secondary_y=False,)
+
+    # Drop down menu to change metric views
+
+    # TODO: Use rbc work example for rfm pie chart
     # For the ones with the same y axis values, make another plot/chart
 
     return chart_grid.show()
