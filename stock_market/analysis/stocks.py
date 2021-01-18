@@ -151,7 +151,7 @@ def stock_chart(
             # Attempt stock data call
             stock_pd = get_ticker(
                 ticker=stock, start_date=start_date, end_date=end_date
-            )[[stock_price_col, stock_volume_col]]
+            )
 
             # Date range is invalid (but stock exists)
             if stock_pd is None:
@@ -159,7 +159,7 @@ def stock_chart(
                 continue
 
             # If valid, add data to stock info
-            stocks_info[stock] = stock_pd
+            stocks_info[stock] = stock_pd[[stock_price_col, stock_volume_col]]
 
         # Invalid ticker
         except RemoteDataError:

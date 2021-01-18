@@ -1,6 +1,7 @@
 import pytest
 
 from stock_market.analysis.stocks import stock_profit, stock_chart, _unique_ordered_list
+from plotly.graph_objs._figure import Figure as go_Figure
 
 
 def test_stock_profit():
@@ -54,6 +55,18 @@ def test_stock_profit():
         )
         == -1.8899993896484375
     )
+
+
+def test_stock_chart():
+    # Exception: No stocks are valid
+    with pytest.raises(Exception):
+        stock_chart(
+            stocks=[
+                "abnb",
+            ],
+            start_date="2015-01-01",
+            end_date="2015-01-08",
+        )
 
 
 def test_helper_functions():
