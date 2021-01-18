@@ -4,6 +4,7 @@ from typing import Optional, List
 import pandas as pd
 import plotly.graph_objects as go
 from pandas_datareader._utils import RemoteDataError
+from plotly.graph_objs._figure import Figure as go_Figure
 from plotly.subplots import make_subplots
 
 from stock_market.data import get_ticker
@@ -107,7 +108,7 @@ def stock_chart(
     stocks: List[str],
     start_date: str,
     end_date: str = None,
-):
+) -> go_Figure:
     """
     View stock performance chart for requested list of stock(s).
 
@@ -124,7 +125,8 @@ def stock_chart(
 
     Returns
     -------
-    stock_view:
+    chart_grid: go_Figure
+        The plotly object with the stock price comparison. Use chart_grid.show() for output.
 
     """
     # Constant parameters
@@ -133,7 +135,7 @@ def stock_chart(
     YAXIS_RANGE_EXTENSION = 0.4
 
     # Unique list of stocks (lower cased)
-    stocks = list(set([stock.lower() for stock in stocks]))
+    stocks = _unique_ordered_list([stock.lower() for stock in stocks])
     stock_price_col = "Close"
     stock_volume_col = "Volume"
 
@@ -269,5 +271,15 @@ def stock_chart(
         tickprefix="$",
         secondary_y=False,
     )  # Adding $ to price values
+    chart_grid.update_layout(title_text="Stock Price & Volume Comparison")
 
-    return chart_grid.show()
+    return chart_grid
+
+
+# Helper functions
+def _unique_ordered_list(_list: list):
+    """
+    Returns a unique list preserving the original order.
+    """
+    _set = set()
+    return [val for val in _list if not (val in _set or _set.add(val))]
