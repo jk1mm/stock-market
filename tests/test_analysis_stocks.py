@@ -46,6 +46,11 @@ def test_stock_profit():
 
     # Check Value calculation results
     assert (
-        stock_profit(ticker="aapl", quantity=1, purchase_date="2021-01-14")
+        stock_profit(
+            ticker="aapl",
+            quantity=1,
+            purchase_date="2021-01-14",
+            sell_date="2021-01-14",
+        )
         == -1.8899993896484375
     )
