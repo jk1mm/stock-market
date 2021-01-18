@@ -263,10 +263,14 @@ def stock_chart(
             col=1,
         )
 
+        # Add date tick labels for each stock
+        chart_grid.update_xaxes(
+            showticklabels=True,
+            row=i,
+            col=1,
+        )
+
     # Formats
-    chart_grid.update_layout(
-        xaxis_showticklabels=True, xaxis2_showticklabels=True
-    )  # Date axis populate for each charts
     chart_grid.update_yaxes(
         tickprefix="$",
         secondary_y=False,
