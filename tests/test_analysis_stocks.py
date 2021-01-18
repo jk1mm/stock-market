@@ -1,6 +1,6 @@
 import pytest
 
-from stock_market.analysis.stocks import stock_profit
+from stock_market.analysis.stocks import stock_profit, stock_chart, _unique_ordered_list
 
 
 def test_stock_profit():
@@ -54,3 +54,10 @@ def test_stock_profit():
         )
         == -1.8899993896484375
     )
+
+
+def test_helper_functions():
+    # Test _unique_ordered_list
+    duplicate_list = ["tsla", "nio", "tsla", "xpev", "nkla"]
+
+    assert _unique_ordered_list(duplicate_list) == ["tsla", "nio", "xpev", "nkla"]
