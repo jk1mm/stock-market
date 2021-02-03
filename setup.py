@@ -15,6 +15,8 @@ setup(
         "bs4>=0.0.1",
         "requests>=2.25.1",
         "plotly>=4.14.1",
+        "praw==7.1.0",
+        "python-dotenv",
     ],
     include_package_data=True,
     python_requires=">=3.6",
