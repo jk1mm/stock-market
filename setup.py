@@ -17,6 +17,7 @@ setup(
         "plotly>=4.14.1",
         "praw==7.1.0",
         "python-dotenv",
+        "nltk==3.5",
     ],
     include_package_data=True,
     python_requires=">=3.6",
