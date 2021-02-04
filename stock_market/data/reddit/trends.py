@@ -6,7 +6,7 @@ from ._connection import reddit_connection
 def get_reddit_top_posts(
     subreddit: str,
     limit: int = 10,
-) -> Dict[str, List[Union[int, str]]]:
+) -> Dict[str, Union[List[int], List[str]]]:
     """
     Extracts top posts from Reddit's subreddit channel.
 
@@ -20,7 +20,7 @@ def get_reddit_top_posts(
 
     Returns
     -------
-    top_posts: Dict[str, List[Union[int, str]]]
+    top_posts: Dict[str, Union[List[int], List[str]]]
         Top post high level information: title and number of comments.
 
     """
