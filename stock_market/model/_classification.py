@@ -1,7 +1,9 @@
+import string
 from typing import Union, List, Tuple
 
 TICKER_LEN_MAX = 5
 AVAILABLE_SOURCE = ["reddit"]
+PUNCTUATIONS = string.punctuation.replace("$", "")
 
 
 def detect_ticker(
@@ -45,6 +47,11 @@ def detect_ticker(
 
             # Breakdown texts
             phrase_dec = phrase.split()
+
+            # Remove punctuations at the end of each words
+            phrase_dec = [word.strip(PUNCTUATIONS) for word in phrase_dec]
+            # Clean Nones
+            phrase_dec = list(filter(None, phrase_dec))
 
             # Rules:
             # R-1) Ticker starts with $. If at least one word is detected, move on to next phrase assuming that
