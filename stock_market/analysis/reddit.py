@@ -1,14 +1,12 @@
-from typing import Union, List, Tuple, Optional
-
+from typing import Union, List, Tuple
 
 TICKER_LEN_MAX = 5
 AVAILABLE_SOURCE = ["reddit"]
 
 
-# TODO: Ticker recognizer
 def detect_ticker(
     text: Union[str, List[str], Tuple[str]], source: str = "reddit"
-) -> Optional[List[str]]:
+) -> List[Union[None, List[str]]]:
     """
     Detects discussed ticker in a (list of) body of text.
 
@@ -22,7 +20,7 @@ def detect_ticker(
 
     Returns
     -------
-    ticker_detection: Optional[List[str]]
+    ticker_detection: List[Union[None, List[str]]]
         List of list of detected tickers for each body of text.
 
     """
@@ -51,7 +49,7 @@ def detect_ticker(
             # R-1) Ticker starts with $. If at least one word is detected, move on to next phrase assuming that
             #      the user is consistent with their ticker mentions with $ beginning.
             if "$" in phrase_dec:
-                phrase_dec.remove("$")
+                phrase_dec = list(filter(lambda word: word != "$", phrase_dec))
             r1 = list(filter(lambda word: word[0] == "$", phrase_dec))
 
             if r1:
@@ -66,6 +64,24 @@ def detect_ticker(
                     # Add data and continue with loop
                     ticker_detection.append(r1)
                     continue
+
+            # R-2) Look for cap locks
+            r2 = [
+                word
+                for word in phrase_dec
+                if word.isupper()
+                and (len(word) <= TICKER_LEN_MAX)
+                and (word not in reddit_common)
+            ]
+
+            if r2:
+                # TODO: Removing auxiliary words
+                # Add data and continue with loop
+                ticker_detection.append(r2)
+                continue
+
+            # Append empty detection
+            ticker_detection.append(None)
 
     return ticker_detection
 
