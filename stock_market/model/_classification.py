@@ -27,6 +27,21 @@ def detect_ticker(
     ticker_detection: List[Union[None, List[str]]]
         List of list of detected tickers for each body of text.
 
+    Notes - Logic and statistical aim behind NLP filtering
+    ------------------------------------------------------
+    - Minimizing false positives is crucial as incorrectly stating tickers can significantly skew
+      towards a common word (e.g. auxiliary verbs, pronouns)
+    - Given a larger sample size of posts, some tickers that are affected by false negatives are
+      hopefully recognized correctly from other posts
+    - Understand the derivation of ticker attributes (from North American market), which do not contain
+      digits and have a prior known max ticker length
+
+    Notes - Filters for different sources
+    -------------------------------------
+    Reddit Filters:
+    - R1: Identifies words that are attached with a '$' mark, that have have no digits in the word
+    - R2: Checks for capital words that are non-dictionary words (spelled wrong)
+
     """
     # Verify source is available
     source = source.lower()
@@ -94,10 +109,17 @@ def detect_ticker(
             ]
 
             if r2:
-                # TODO: Removing auxiliary words
-                # Add data and continue with loop
-                ticker_detection.append(r2)
-                continue
+                # Check for dictionary words and if digit exists
+                r2 = [
+                    ticker.upper()
+                    for ticker in spell_check.unknown(r2)
+                    if (len(ticker) <= TICKER_LEN_MAX) and (not _check_digit(ticker))
+                ]
+
+                if r2:
+                    # Add data and continue with loop
+                    ticker_detection.append(r2)
+                    continue
 
             # Append empty detection
             ticker_detection.append(None)
