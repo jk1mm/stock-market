@@ -67,7 +67,11 @@ def detect_ticker(
             "WSB",
             "OTC",
             "ETF",
+            "TLDR",
+            "PT",
         ]
+
+        # TODO: Controllable level of rule strictness
 
         # Go through each phrases in text (list)
         for phrase in text:
@@ -88,15 +92,14 @@ def detect_ticker(
 
             if "$" in phrase:
                 phrase_dec = list(filter(lambda word: "$" in word, phrase_dec))
-                r1 = list(filter(lambda word: word.replace("$", ""), phrase_dec))
+                r1 = list(map(lambda word: word.strip("$"), phrase_dec))
 
             if r1:
                 # Remove invalid length and digits inclusive tickers
                 r1 = [
-                    ticker[1:].upper()
+                    ticker.upper()
                     for ticker in r1
-                    if (len(ticker) <= TICKER_LEN_MAX + 1)
-                    and (not _check_digit(ticker))
+                    if (len(ticker) <= TICKER_LEN_MAX) and (not _check_digit(ticker))
                 ]
 
                 if r1:
