@@ -1,9 +1,8 @@
-from collections import Counter
-
 import pandas as pd
 
 from stock_market.data.reddit.trends import get_reddit_top_posts
 from stock_market.model._classification import detect_ticker
+from stock_market.model._nlp import nltk_sentiment
 
 
 class RedditSentiment(object):
@@ -38,7 +37,6 @@ class RedditSentiment(object):
 
         # Analysis from properties
         self._sentiment = None
-        self._trending_stocks = None
         self._trending_charts = None
 
         # Supports
@@ -63,34 +61,63 @@ class RedditSentiment(object):
             return classified_tickers
 
     @property
-    def trending_stocks(self) -> pd.DataFrame:
-        """
-        Ranks the stocks by most discussed.
-
-        """
+    def sentiment(self):
         # Checking for first time run
-        if self._trending_stocks:
-            return self._trending_stocks
+        if self._sentiment:
+            return self._sentiment
         else:
             # Get classified ticker data
             ticker_classified = self.ticker_classification
+            valid_index = [
+                i for i, v in enumerate(ticker_classified) if v
+            ]  # Valid indexes
+            valid_tickers = [ticker_classified[i] for i in valid_index]
 
-            flattened_list = [
-                item
-                for sublist in list(filter(None, ticker_classified))
-                for item in sublist
-            ]
+            # Get posts
+            # TODO: Incorporate num_comments
+            posts = self.posts["titles"]
+            valid_posts = [posts[i] for i in valid_index]
 
-            trending_table = (
-                pd.DataFrame(
-                    {
-                        "ticker": list(Counter(flattened_list).keys()),
-                        "mentions": list(Counter(flattened_list).values()),
-                    }
-                )
-                .sort_values(by="mentions", ascending=False)
+            # Perform sentiment
+            sentiment_res = nltk_sentiment(valid_posts)
+
+            # Compute avg compound scores
+            sentiment_agg = dict()
+            for i in range(len(valid_tickers)):
+                for ticker in valid_tickers[i]:
+                    # Check if ticker exists
+                    if sentiment_agg.get(ticker):
+                        sentiment_agg[ticker].append(sentiment_res[i]["compound"])
+                    else:
+                        sentiment_agg[ticker] = [sentiment_res[i]["compound"]]
+
+            # Prepare table with
+            sentiment_table = {
+                "ticker": list(),
+                "mentions": list(),
+                "sentiment": list(),
+            }
+            for ticker in sentiment_agg.keys():
+                # Append ticker
+                sentiment_table["ticker"].append(ticker)
+
+                # Append number of mentions
+                sentiment_table["mentions"].append(len(sentiment_agg[ticker]))
+
+                # Append sentiment scores
+                current_score = [sc for sc in sentiment_agg[ticker] if sc != 0.0]
+                if current_score:
+                    current_score = sum(current_score) / len(current_score)
+                else:
+                    current_score = 0.0
+                sentiment_table["sentiment"].append(current_score)
+
+            sentiment_table = (
+                pd.DataFrame(sentiment_table)
+                .sort_values(by="sentiment", ascending=False)
                 .reset_index(drop=True)
             )
-            self._trending_stocks = trending_table
 
-            return trending_table
+            self._sentiment = sentiment_table
+
+            return sentiment_table
