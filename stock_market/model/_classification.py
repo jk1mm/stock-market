@@ -5,7 +5,7 @@ from spellchecker import SpellChecker
 
 TICKER_LEN_MAX = 5
 AVAILABLE_SOURCE = ["reddit"]
-PUNCTUATIONS = string.punctuation.replace("$", "")
+PUNCTUATIONS = string.punctuation.replace("$", "") + "“"
 
 
 def detect_ticker(
@@ -61,7 +61,13 @@ def detect_ticker(
     # For reddit source
     if source == "reddit":
         # Common reddit terms
-        reddit_common = ["DD", "COVID", "WSB"]
+        reddit_common = [
+            "DD",
+            "COVID",
+            "WSB",
+            "OTC",
+            "ETF",
+        ]
 
         # Go through each phrases in text (list)
         for phrase in text:
