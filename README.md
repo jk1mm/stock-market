@@ -56,3 +56,14 @@ and financial models are some upcoming work in the making.
 - **Reddit**: Analysis on Reddit posts
     1) Sentiment view of trending Reddit posts in a specified subreddit, leveraging 
        ticker detection and sentiment model from [models](stock_market/model).
+       
+
+### Model
+
+#### [Statistical Models](stock_market/model)
+- **Classification**: Models relating to classification
+    1) Detect Stock: Identifies the ticker being discussed in a given text.
+
+
+- **NLP**: Models relating to natural language processing
+    1) NLTK Sentiment: Leverages Vader Lexicon data to evaluate a given text's sentiment.
