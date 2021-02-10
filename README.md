@@ -1,8 +1,8 @@
 # Stock Market
 
-Stock market related modules packaged into this one repo.
-Market data, analysis, and prediction are some of the upcoming 
-work in the making.
+Research & Analysis driven module, with the aim to help improve a trading
+decision or optimize a stock portfolio. Market/trend data, market analysis, 
+and financial models are some upcoming work in the making.
 
 
 ## Overview
@@ -13,8 +13,7 @@ work in the making.
 ## Module Listing
  * [Data](https://github.com/jk1mm/stock-market#data)
  * [Analysis](https://github.com/jk1mm/stock-market#analysis)
-
-
+ * [Model](https://github.com/jk1mm/stock-market#model)
 
 ---
 
@@ -24,31 +23,36 @@ work in the making.
 
 #### [Market data](stock_market/data)
  - **Stocks**: Get stocks performances for a date range given 
-  a ticker symbol
+               a ticker symbol
  - **IPO**: Get IPO related data from [MarketWatch](https://www.marketwatch.com/tools/ipo-calendar)
             and populate new metrics
  - **Index**: Get market indexes (e.g. S&P 500) 
-
+ - [**Reddit**](https://www.reddit.com/): Understand the general sentiment around most discussed stocks and topics
 
 
 ### Analysis
 
 #### [Market analysis](stock_market/analysis)
 - **IPO**: Analysis on recent and upcoming IPO stocks
-    1) General success metrics on recent IPO bubble 
-    2) Optimal sell day analysis
-    3) Individual stock performance views
+    1) General success metrics on recent IPO bubble.
+    2) Optimal sell day analysis.
+    3) Individual stock performance views.
   
 
 - **Index**: Analysis on a market index
-    1) Stock categorization summary by industry
-    2) Index performance for different periodic times
-    3) Today's top and bottom performing stocks
+    1) Stock categorization summary by industry.
+    2) Index performance for different periodic times.
+    3) Today's top and bottom performing stocks.
 
 
-- **Stocks**: Stock net profit calculator
-  1) Supposed net gain on a stock for a buy and sell on a specified 
-     date period
-  2) Stock chart comparison between a list of requested stocks to view. 
-     Provides quick and easy way to analyze the performance of each stock
-     aligned by a date range.
+- **Stocks**: Analysis on stocks
+    1) Stock net profit calculator: Supposed net gain on a stock for a 
+       buy and sell on a specified date period.
+    2) Stock chart comparison between a list of requested stocks to view. 
+       Provides quick and easy way to analyze the performance of each stock
+       aligned by a date range.
+
+
+- **Reddit**: Analysis on Reddit posts
+    1) Sentiment view of trending Reddit posts in a specified subreddit, leveraging 
+       ticker detection and sentiment model from [models](stock_market/model).
