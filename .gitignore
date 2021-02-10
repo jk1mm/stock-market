@@ -2,5 +2,6 @@ venv/
 build/
 .tox/
 .idea/
+.env
 .coverage
 tox_results.xml
