@@ -44,9 +44,11 @@ def get_reddit_top_posts(
     # Check if subreddit exists
     try:
         # Top posts in subreddit
-        top_agg = reddit_connection.subreddits.search_by_name(subreddit, exact=True)[
-            0
-        ].top(limit=num_post, time_filter=time_period)
+        top_agg = (
+            reddit_connection()
+            .subreddits.search_by_name(subreddit, exact=True)[0]
+            .top(limit=num_post, time_filter=time_period)
+        )
     except NotFound:
         raise Warning("Specified subreddit does not exist.")
 
