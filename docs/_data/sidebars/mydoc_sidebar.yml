@@ -1,0 +1,46 @@
+# Sidebar on the main page
+
+entries:
+- title: sidebar
+  product: Version
+  version: 1.2.1
+  folders:
+
+  - title: Overview
+    url: /index.html
+    output: web, pdf
+    folderitems:
+
+    - title: Outline
+      url: /index.html
+      output: web, pdf
+      type: homepage
+
+    - title: Version History
+      url: /version_history.html
+      output: web, pdf
+
+  - title: Modules
+    output: web
+    folderitems:
+
+    - title: Data
+      url: /module_data.html
+      output: web, pdf
+
+    - title: Analysis
+      url: /module_analysis.html
+      output: web, pdf
+
+      subfolders:
+        - title: Models
+          output: web
+          subfolderitems:
+
+          - title: Classification
+            url: model_module_classification.html
+            output: web
+
+          - title: NLP
+            url: /model_module_nlp.html
+            output: web
