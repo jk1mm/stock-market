@@ -1,0 +1,8 @@
+## Topnav single links
+topnav:
+  - title: Topnav
+    items:
+      - title: GitHub
+        external_url: https://github.com/jk1mm/stock-market/tree/release
+      - title: Demo
+        url: /demo
