@@ -16,7 +16,7 @@ setup(
         "requests>=2.25.1",
         "plotly>=4.14.1",
         "praw==7.1.4",
-        "prawcore",
+        "prawcore>=1.5.0",
         "pyspellchecker==0.5.6",
         "python-dotenv",
         "nltk==3.5",
