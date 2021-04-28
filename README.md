@@ -6,7 +6,7 @@ and financial models are some upcoming work in the making.
 
 
 ## Overview
-<p align="center"><img src="https://github.com/jk1mm/stock-market/blob/release/pic/overview_flowchart.png"></p>
+<p align="center"><img src="https://github.com/jk1mm/stock-market/blob/release/docs/images/overview_flowchart.png"></p>
 
 
 ---

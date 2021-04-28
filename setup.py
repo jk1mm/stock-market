@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="stock_market",
-    version="1.2.1",
+    version="1.2.1.1",
     description="Modules related to stock market model.",
     author="Josh Kim",
     author_email="joshkim47@gmail.com",
@@ -16,7 +16,7 @@ setup(
         "requests>=2.25.1",
         "plotly>=4.14.1",
         "praw==7.1.4",
-        "prawcore",
+        "prawcore>=1.5.0",
         "pyspellchecker==0.5.6",
         "python-dotenv",
         "nltk==3.5",
