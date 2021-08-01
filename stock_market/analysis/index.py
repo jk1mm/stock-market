@@ -7,10 +7,10 @@ import pandas as pd
 import requests
 
 from stock_market.data.constants import (
-    SP500_URL,
     PERFORMANCE_PERIODIC,
     PERFORMANCE_TOP_STOCKS,
     PERFORMERS_BOTTOM_STOCKS,
+    SP500_URL,
 )
 
 AVAILABLE_INDEX = ["SP500"]

@@ -1,5 +1,5 @@
 import warnings
-from typing import Optional, List
+from typing import List, Optional
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -102,6 +102,12 @@ def stock_profit(
     )
 
     return net_profit
+
+
+# TODO: Stock sentiment
+# def stock_sentiment(
+#     ticker: str,
+# ) -> Optional[float]:
 
 
 def stock_chart(
