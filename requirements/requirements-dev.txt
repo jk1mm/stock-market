@@ -3,5 +3,5 @@ pytest-cov
 tox
 tox-wheel
 black
+isort
 pre-commit
-

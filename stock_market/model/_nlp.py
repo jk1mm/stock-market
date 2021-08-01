@@ -1,5 +1,5 @@
 from pathlib import Path as _Path
-from typing import Union, List, Dict
+from typing import Dict, List, Union
 
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 

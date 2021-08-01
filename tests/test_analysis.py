@@ -1,7 +1,7 @@
 import pytest
-
-from stock_market.analysis.stocks import stock_profit, stock_chart, _unique_ordered_list
 from plotly.graph_objs._figure import Figure as go_Figure
+
+from stock_market.analysis.stocks import _unique_ordered_list, stock_chart, stock_profit
 
 
 class TestStocksAnalysis:

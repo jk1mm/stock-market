@@ -43,10 +43,12 @@ class IPO(object):
 
             # Separate Ticker symbol and price change as separate columns
             data.insert(
-                1, "Ticker", data["Symbol"].str.extract("([^\s]+)", expand=True)
+                1, "Ticker", data["Symbol"].str.extract("([^\s]+)", expand=True)[0]
             )
             data.insert(
-                5, "Percent_Change", data["Symbol"].str.extract("\s(.*)\%", expand=True)
+                5,
+                "Percent_Change",
+                data["Symbol"].str.extract("\s(.*)\%", expand=True)[0],
             )
             del data["Symbol"]
 
@@ -83,10 +85,10 @@ class IPO(object):
 
             # Extract data
             data = self.extract_data(ws_val_this_week)
-            data1 = self.extract_data(ws_val_next_week)
+            data_nw = self.extract_data(ws_val_next_week)
             data["week"] = "This Week"
-            data1["week"] = "Next Week"
-            data.append(data1, ignore_index=True)
+            data_nw["week"] = "Next Week"
+            data = data.append(data_nw, ignore_index=True)
 
             self._upcoming_ipo = data
             return data

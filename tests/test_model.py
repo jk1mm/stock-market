@@ -1,6 +1,6 @@
 import pytest
 
-from stock_market.model._classification import detect_ticker, _check_digit
+from stock_market.model._classification import _check_digit, detect_ticker
 from stock_market.model._nlp import nltk_sentiment
 
 
