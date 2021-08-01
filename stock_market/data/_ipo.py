@@ -43,10 +43,12 @@ class IPO(object):
 
             # Separate Ticker symbol and price change as separate columns
             data.insert(
-                1, "Ticker", data["Symbol"].str.extract("([^\s]+)", expand=True)
+                1, "Ticker", data["Symbol"].str.extract("([^\s]+)", expand=True)[0]
             )
             data.insert(
-                5, "Percent_Change", data["Symbol"].str.extract("\s(.*)\%", expand=True)
+                5,
+                "Percent_Change",
+                data["Symbol"].str.extract("\s(.*)\%", expand=True)[0],
             )
             del data["Symbol"]
 
