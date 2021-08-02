@@ -1,8 +1,10 @@
 import warnings
 from typing import List, Optional
 
+import finviz
 import pandas as pd
 import plotly.graph_objects as go
+import requests.exceptions
 from pandas_datareader._utils import RemoteDataError
 from plotly.graph_objs._figure import Figure as go_Figure
 from plotly.subplots import make_subplots
@@ -105,9 +107,34 @@ def stock_profit(
 
 
 # TODO: Stock sentiment
-# def stock_sentiment(
-#     ticker: str,
-# ) -> Optional[float]:
+def stock_health(
+    ticker: str,
+) -> dict:
+    """
+    Stock health, using finviz api.
+
+    Parameters
+    ----------
+    ticker: str
+        Stock ticker symbol.
+
+    Returns
+    -------
+    health: dict
+        Stock news, insider trading, and price target information.
+
+    """
+    health = {}
+
+    try:
+        health["news"] = finviz.get_news(ticker)
+    except requests.exceptions.HTTPError:
+        raise ValueError("Please input a valid ticker")
+
+    health["insider_trades"] = finviz.get_insider(ticker)
+    health["price_targets"] = finviz.get_analyst_price_targets(ticker)
+
+    return health
 
 
 def stock_chart(
