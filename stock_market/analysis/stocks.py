@@ -104,12 +104,6 @@ def stock_profit(
     return net_profit
 
 
-# TODO: Stock sentiment
-# def stock_sentiment(
-#     ticker: str,
-# ) -> Optional[float]:
-
-
 def stock_chart(
     stocks: List[str],
     start_date: str,

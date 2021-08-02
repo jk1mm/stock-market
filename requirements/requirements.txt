@@ -9,3 +9,4 @@ prawcore>=2.3.0,<3.0.0
 pyspellchecker==0.6.2,<1.0.0
 python-dotenv
 nltk>=3.6.2,<4.0.0
+finviz>=1.4.2,<2.0.0

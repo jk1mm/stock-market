@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="stock_market",
-    version="1.3.0",
+    version="1.3.1",
     description="Modules related to stock market model.",
     author="Josh Kim",
     author_email="joshkim47@gmail.com",
@@ -19,6 +19,7 @@ setup(
         "pyspellchecker==0.6.2,<1.0.0",
         "python-dotenv",
         "nltk>=3.6.2,<4.0.0",
+        "finviz>=1.4.2,<2.0.0",
     ],
     include_package_data=True,
     python_requires=">=3.6",

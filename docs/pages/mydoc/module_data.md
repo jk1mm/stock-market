@@ -49,6 +49,24 @@ print(abnb)
 
 ```
 
+The **stock_health** function gets a given ticker's external information (news, analyst ratings, insider trading)
+using the [finviz](https://github.com/mariostoev/finviz) api.
+
+```python
+# Python
+
+# Import module
+from stock_market.data import stock_health
+
+# Get external information about Airbnb
+abnb_health = stock_health(
+    ticker="ABNB"
+)
+
+print(abnb_health)
+
+```
+
 ## IPO
 
 Initial Public Offering is the offering of a company's shares into the stock market/exchange.

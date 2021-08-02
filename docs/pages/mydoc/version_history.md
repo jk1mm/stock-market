@@ -11,6 +11,13 @@ Below lists the history of changes made to this package.
 
 ### V1.0 +
 
+#### 1.3.1
+- Data health call, using [finviz](https://pypi.org/project/finviz/) api
+
+#### 1.3.0
+- IPO data module, fix several bugs
+- isort addition
+
 #### 1.2.1
 - Update documentation to Jekyll format
 
