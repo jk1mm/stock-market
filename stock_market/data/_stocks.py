@@ -1,7 +1,9 @@
 from typing import Optional
 
+import finviz
 import numpy as np
 import pandas as pd
+import requests.exceptions
 from pandas_datareader import data
 
 
@@ -101,3 +103,33 @@ def get_ticker(
         )
 
     return stock_data
+
+
+def stock_health(
+    ticker: str,
+) -> dict:
+    """
+    Stock health, using finviz api.
+
+    Parameters
+    ----------
+    ticker: str
+        Stock ticker symbol.
+
+    Returns
+    -------
+    health: dict
+        Stock news, insider trading, and price target information.
+
+    """
+    health = {}
+
+    try:
+        health["news"] = finviz.get_news(ticker)
+    except requests.exceptions.HTTPError:
+        raise ValueError("Please input a valid ticker")
+
+    health["insider_trades"] = finviz.get_insider(ticker)
+    health["price_targets"] = finviz.get_analyst_price_targets(ticker)
+
+    return health
