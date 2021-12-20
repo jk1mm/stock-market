@@ -4,6 +4,9 @@
 # Ipo
 IPO_URL = "https://www.marketwatch.com/tools/ipo-calendar"
 
+# Crypto
+CRYPTO_CURRENCY = ["USD", "CAD"]
+
 
 # Analysis
 # --------
