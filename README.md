@@ -24,6 +24,8 @@ and financial models are some upcoming work in the making.
 #### [Market data](stock_market/data)
  - **Stocks**: Get stocks performances for a date range given 
                a ticker symbol
+ - **Crypto**: Get crypto performances for a date range given
+               a ticker symbol
  - **IPO**: Get IPO related data from [MarketWatch](https://www.marketwatch.com/tools/ipo-calendar)
             and populate new metrics
  - **Index**: Get market indexes (e.g. S&P 500) 

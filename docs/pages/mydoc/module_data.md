@@ -41,7 +41,8 @@ from stock_market.data import get_ticker
 # Get Airbnb's performance from December 10th
 abnb = get_ticker(
     ticker="ABNB",
-    start_date="2020-12-10"
+    start_date="2021-12-10",
+    end_date="2021-12-17",
 )
 
 # View Airbnb's stock performance
@@ -64,6 +65,30 @@ abnb_health = stock_health(
 )
 
 print(abnb_health)
+
+```
+
+## Crypto
+
+The **get_crypto** function retrieves a crypto-currency's price history for a specified date range.
+It leverages the **pandas_datareader** module to extract data from Yahoo finance.
+
+```python
+# Python
+
+# Import module
+from stock_market.data import get_crypto
+
+# Get BTC chart from December 10th
+btc = get_crypto(
+    ticker="BTC",
+    start_date="2021-12-10",
+    end_date="2021-12-17",
+    currency_type="CAD",
+)
+
+# View BTC chart
+print(btc)
 
 ```
 
