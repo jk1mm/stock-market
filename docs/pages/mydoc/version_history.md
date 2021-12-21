@@ -11,6 +11,9 @@ Below lists the history of changes made to this package.
 
 ### V1.0 +
 
+#### 1.3.2
+- Crypto data call (USD/CAD)
+
 #### 1.3.1
 - Data health call, using [finviz](https://pypi.org/project/finviz/) api
 
