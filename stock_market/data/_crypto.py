@@ -2,6 +2,7 @@ from typing import Optional
 
 import pandas as pd
 from pandas_datareader import data
+from pandas_datareader._utils import RemoteDataError
 
 from stock_market.data.constants import CRYPTO_CURRENCY
 
@@ -51,7 +52,7 @@ def get_crypto(
     # Extract crypto data using DataReader
     try:
         crypto_data = data.DataReader(ticker, "yahoo", start_date, end_date)
-    except KeyError:
+    except RemoteDataError:
         return None
 
     return crypto_data
